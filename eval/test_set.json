@@ -1,55 +1,5 @@
 [
   {
-    "id": "AAPL-2025-lookup-01",
-    "filing_id": "AAPL-2025",
-    "question": "What was Apple's total net sales in fiscal year 2025?",
-    "type": "lookup",
-    "answer": 416161,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Statements of Operations, Total net sales row, FY2025"
-  },
-  {
-    "id": "AAPL-2025-lookup-02",
-    "filing_id": "AAPL-2025",
-    "question": "What was Apple's net income in fiscal year 2025?",
-    "type": "lookup",
-    "answer": 112010,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Statements of Operations, Net income row, FY2025"
-  },
-  {
-    "id": "AAPL-2025-lookup-03",
-    "filing_id": "AAPL-2025",
-    "question": "What were Apple's iPhone net sales in fiscal year 2025?",
-    "type": "lookup",
-    "answer": 209586,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Item 7 MD&A, Products and Services Performance table, iPhone row, 2025"
-  },
-  {
-    "id": "AAPL-2025-lookup-04",
-    "filing_id": "AAPL-2025",
-    "question": "What was Apple's research and development expense in fiscal year 2025?",
-    "type": "lookup",
-    "answer": 34550,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Statements of Operations, Research and development row, FY2025"
-  },
-  {
-    "id": "AAPL-2025-lookup-05",
-    "filing_id": "AAPL-2025",
-    "question": "What were Apple's total assets as of September 27, 2025?",
-    "type": "lookup",
-    "answer": 359241,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Balance Sheets, Total assets row, September 27, 2025 column"
-  },
-  {
     "id": "AAPL-2025-simple-01",
     "filing_id": "AAPL-2025",
     "question": "What was Apple's year-over-year total net sales growth rate from fiscal year 2024 to fiscal year 2025?",
@@ -74,7 +24,7 @@
     "filing_id": "AAPL-2025",
     "question": "What was Apple's year-over-year net income growth rate from fiscal year 2024 to fiscal year 2025?",
     "type": "simple_calc",
-    "answer": 19.50,
+    "answer": 19.5,
     "unit": "percent",
     "tolerance_pct": 1.0,
     "source_hint": "FY2024 net income $93,736M, FY2025 net income $112,010M; (112010-93736)/93736 = 19.50%"
@@ -118,7 +68,7 @@
     "filing_id": "AAPL-2025",
     "question": "What was the 2-year compound annual growth rate (CAGR) of Apple's total net sales from fiscal year 2023 to fiscal year 2025?",
     "type": "complex_calc",
-    "answer": 4.20,
+    "answer": 4.2,
     "unit": "percent",
     "tolerance_pct": 2.0,
     "source_hint": "FY2023 $383,285M, FY2025 $416,161M; CAGR = (416161/383285)^(1/2) - 1 = 4.20%"
@@ -170,83 +120,64 @@
     "source_hint": "Total current assets $147,957M - total current liabilities $165,631M = -$17,674M (negative working capital)"
   },
   {
-    "id": "AAPL-2025-viz-01",
+    "id": "AAPL-2025-complex-10",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's net sales breakdown by Products and Services for fiscal years 2023, 2024, and 2025.",
-    "type": "viz",
+    "question": "Compare the 2-year compound annual growth rate (CAGR) of Apple's Services net sales versus Products net sales from fiscal year 2023 to fiscal year 2025. By how many percentage points does the Services CAGR exceed the Products CAGR?",
+    "type": "complex_calc",
     "expected_values": {
-      "products_2023": 298085,
-      "products_2024": 294866,
-      "products_2025": 307003,
-      "services_2023": 85200,
-      "services_2024": 96169,
-      "services_2025": 109158
+      "products_cagr_pct": 1.48,
+      "services_cagr_pct": 13.19,
+      "value": 11.71
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Statements of Operations: Products and Services rows under Net sales for FY2023, FY2024, FY2025"
+    "tolerance_pct": 2.0,
+    "source_hint": "Products: FY23 $298,085M -> FY25 $307,003M, CAGR = (307003/298085)^(1/2) - 1 = 1.48%; Services: FY23 $85,200M -> FY25 $109,158M, CAGR = (109158/85200)^(1/2) - 1 = 13.19%; gap = 11.71 pp"
   },
   {
-    "id": "AAPL-2025-viz-02",
+    "id": "AAPL-2025-complex-11",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's fiscal year 2025 net sales broken down by reportable geographic segment (Americas, Europe, Greater China, Japan, Rest of Asia Pacific).",
-    "type": "viz",
+    "question": "Compute the Herfindahl-Hirschman Index (HHI) of geographic concentration for Apple's fiscal year 2025 net sales, defined as the sum of the squared revenue shares of the five reportable geographic segments (Americas, Europe, Greater China, Japan, Rest of Asia Pacific). Use shares expressed as decimal fractions (e.g., 0.4286 for 42.86%) so the HHI is a number between 0 and 1.",
+    "type": "complex_calc",
     "expected_values": {
-      "americas": 178353,
-      "europe": 111032,
-      "greater_china": 64377,
-      "japan": 28703,
-      "rest_of_asia_pacific": 33696
+      "americas_share_pct": 42.86,
+      "europe_share_pct": 26.68,
+      "greater_china_share_pct": 15.47,
+      "japan_share_pct": 6.9,
+      "rest_of_asia_pacific_share_pct": 8.1,
+      "value": 0.2901
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Item 7 MD&A, Segment Operating Performance table, 2025 column. Sum equals $416,161M."
+    "tolerance_pct": 1.5,
+    "source_hint": "Shares of $416,161M total: Americas 42.86%, Europe 26.68%, Greater China 15.47%, Japan 6.90%, RoAP 8.10%; HHI = 0.4286^2 + 0.2668^2 + 0.1547^2 + 0.0690^2 + 0.0810^2 = 0.2901"
   },
   {
-    "id": "AAPL-2025-viz-03",
+    "id": "AAPL-2025-complex-12",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's operating income trend over fiscal years 2023, 2024, and 2025.",
-    "type": "viz",
+    "question": "Compute the sample standard deviation (using n-1 in the denominator) of Apple's operating income across fiscal years 2023, 2024, and 2025. Report the standard deviation in millions of USD.",
+    "type": "complex_calc",
     "expected_values": {
       "operating_income_2023": 114301,
       "operating_income_2024": 123216,
-      "operating_income_2025": 133050
+      "operating_income_2025": 133050,
+      "mean_operating_income": 123522.33,
+      "value": 9378.25
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Statements of Operations, Operating income row, three fiscal years"
+    "tolerance_pct": 2.0,
+    "source_hint": "Op income [114301, 123216, 133050]; mean 123522.33; deviations -9221.33, -306.33, 9527.67; sample variance = sum_sq/(n-1) = 87,951,548; sample SD = 9,378.25"
   },
   {
-    "id": "AAPL-2025-viz-04",
+    "id": "AAPL-2025-complex-13",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's fiscal year 2025 net sales broken down by product category (iPhone, Mac, iPad, Wearables/Home/Accessories, Services).",
-    "type": "viz",
+    "question": "Compute the Herfindahl-Hirschman Index (HHI) of product-category concentration for Apple's fiscal year 2025 net sales, defined as the sum of the squared revenue shares of the five product categories (iPhone, Mac, iPad, Wearables/Home/Accessories, Services). Use shares expressed as decimal fractions so the HHI is a number between 0 and 1.",
+    "type": "complex_calc",
     "expected_values": {
-      "iphone": 209586,
-      "mac": 33708,
-      "ipad": 28023,
-      "wearables_home_accessories": 35686,
-      "services": 109158
+      "iphone_share_pct": 50.36,
+      "mac_share_pct": 8.1,
+      "ipad_share_pct": 6.73,
+      "wearables_home_accessories_share_pct": 8.58,
+      "services_share_pct": 26.23,
+      "value": 0.3409
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Item 7 MD&A, Products and Services Performance table, 2025 column. Sum equals $416,161M."
-  },
-  {
-    "id": "AAPL-2025-lookup-06",
-    "filing_id": "AAPL-2025",
-    "question": "What was Apple's cash and cash equivalents balance as of September 27, 2025?",
-    "type": "lookup",
-    "answer": 35934,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Balance Sheets, Cash and cash equivalents row, September 27, 2025"
-  },
-  {
-    "id": "AAPL-2025-lookup-07",
-    "filing_id": "AAPL-2025",
-    "question": "What were Apple's Greater China net sales in fiscal year 2025?",
-    "type": "lookup",
-    "answer": 64377,
-    "unit": "millions USD",
-    "tolerance_pct": 0.0,
-    "source_hint": "Item 7 MD&A, Segment Operating Performance table, Greater China row, 2025"
+    "tolerance_pct": 1.5,
+    "source_hint": "Shares of $416,161M total: iPhone 50.36%, Mac 8.10%, iPad 6.73%, Wearables 8.58%, Services 26.23%; HHI = 0.5036^2 + 0.0810^2 + 0.0673^2 + 0.0858^2 + 0.2623^2 = 0.3409"
   },
   {
     "id": "AAPL-2025-simple-06",
@@ -290,10 +221,10 @@
     "question": "By how many percentage points did Services as a share of Apple's total net sales change from fiscal year 2023 to fiscal year 2025?",
     "type": "complex_calc",
     "expected_values": {
-      "value": 4.00,
+      "value": 4.0,
       "fy2023_services_share_pct": 22.23,
       "fy2025_services_share_pct": 26.23,
-      "change_pct_points": 4.00
+      "change_pct_points": 4.0
     },
     "tolerance_pct": 2.0,
     "source_hint": "FY23: 85200/383285 = 22.23%; FY25: 109158/416161 = 26.23%; change = +4.00 pp"
@@ -304,51 +235,54 @@
     "question": "How did Apple's R&D intensity (R&D expense as a percentage of total net sales) change from fiscal year 2023 to fiscal year 2025? Report the percentage point difference.",
     "type": "complex_calc",
     "expected_values": {
-      "value": 0.50,
-      "fy2023_rd_intensity_pct": 7.80,
-      "fy2025_rd_intensity_pct": 8.30,
-      "change_pct_points": 0.50
+      "value": 0.5,
+      "fy2023_rd_intensity_pct": 7.8,
+      "fy2025_rd_intensity_pct": 8.3,
+      "change_pct_points": 0.5
     },
     "tolerance_pct": 2.0,
     "source_hint": "FY23: 29915/383285 = 7.80%; FY25: 34550/416161 = 8.30%; change = +0.50 pp"
   },
   {
-    "id": "AAPL-2025-viz-05",
+    "id": "AAPL-2025-complex-14",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's diluted earnings per share over fiscal years 2023, 2024, and 2025.",
-    "type": "viz",
+    "question": "What was the 2-year compound annual growth rate (CAGR) of Apple's diluted earnings per share from fiscal year 2023 to fiscal year 2025?",
+    "type": "complex_calc",
     "expected_values": {
-      "diluted_eps_2023": 6.13,
-      "diluted_eps_2024": 6.08,
-      "diluted_eps_2025": 7.46
+      "fy2023_diluted_eps": 6.13,
+      "fy2025_diluted_eps": 7.46,
+      "value": 10.32
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Statements of Operations, Earnings per share Diluted row, three fiscal years"
+    "tolerance_pct": 2.0,
+    "source_hint": "FY23 diluted EPS $6.13, FY25 diluted EPS $7.46; CAGR = (7.46/6.13)^(1/2) - 1 = 10.32%"
   },
   {
-    "id": "AAPL-2025-viz-06",
+    "id": "AAPL-2025-complex-15",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's balance sheet composition as of September 27, 2025: total assets, total liabilities, and total shareholders' equity.",
-    "type": "viz",
+    "question": "Compute Apple's fiscal year 2025 return on equity (ROE) using the three-factor DuPont decomposition: ROE = (net income / total net sales) x (total net sales / total assets) x (total assets / total shareholders' equity). Report ROE as a percentage.",
+    "type": "complex_calc",
     "expected_values": {
-      "total_assets": 359241,
-      "total_liabilities": 285508,
-      "total_shareholders_equity": 73733
+      "net_income_margin_pct": 26.92,
+      "asset_turnover": 1.158,
+      "equity_multiplier": 4.872,
+      "value": 151.91
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Balance Sheets, Sept 27, 2025: assets $359,241M = liabilities $285,508M + equity $73,733M"
+    "tolerance_pct": 2.0,
+    "source_hint": "NI margin = 112010/416161 = 26.92%; asset turnover = 416161/359241 = 1.158; equity multiplier = 359241/73733 = 4.872; ROE = 0.2692 x 1.158 x 4.872 x 100 = 151.91%"
   },
   {
-    "id": "AAPL-2025-viz-07",
+    "id": "AAPL-2025-complex-16",
     "filing_id": "AAPL-2025",
-    "question": "Show Apple's research and development expense over fiscal years 2023, 2024, and 2025.",
-    "type": "viz",
+    "question": "Compute Apple's R&D intensity (R&D expense divided by total net sales) for each of fiscal years 2023, 2024, and 2025, then compute the sample standard deviation (using n-1 in the denominator) of those three intensity values. Report the standard deviation in percentage points (e.g., 0.25 if intensities are 7.80%, 8.02%, 8.30%).",
+    "type": "complex_calc",
     "expected_values": {
-      "rd_expense_2023": 29915,
-      "rd_expense_2024": 31370,
-      "rd_expense_2025": 34550
+      "fy2023_rd_intensity_pct": 7.8,
+      "fy2024_rd_intensity_pct": 8.02,
+      "fy2025_rd_intensity_pct": 8.3,
+      "mean_rd_intensity_pct": 8.04,
+      "value": 0.249
     },
-    "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Statements of Operations, Research and development row, three fiscal years"
+    "tolerance_pct": 3.0,
+    "source_hint": "FY23: 29915/383285 = 7.80%; FY24: 31370/391035 = 8.02%; FY25: 34550/416161 = 8.30%; mean 8.04%; sample SD (n-1) = 0.249 pp"
   }
 ]

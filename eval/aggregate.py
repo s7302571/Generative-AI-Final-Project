@@ -24,7 +24,7 @@ RESULTS_DIR = ROOT / "results"
 REPORT_PATH = RESULTS_DIR / "report.md"
 DEFAULT_GRADED = [RESULTS_DIR / "graded_full.json", RESULTS_DIR / "graded_rag_only.json"]
 
-QUESTION_TYPES = ["lookup", "simple_calc", "complex_calc", "viz"]
+QUESTION_TYPES = ["simple_calc", "complex_calc"]
 
 # Rough Opus 4.7 pricing as of writing (USD per 1M tokens). Used only for a
 # ballpark cost figure in the report; update if pricing changes.
