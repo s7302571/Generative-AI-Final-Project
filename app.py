@@ -25,9 +25,93 @@ import streamlit as st
 
 from src import config
 from src.agent import ask
+from src.ingest import PDFTextExtractionError
 from src.vectorstore import VectorStore
 
 st.set_page_config(page_title="AskEdgar", layout="wide")
+
+
+# ChatGPT / VS-Code-Chat style: bordered message area + prominent input below.
+CHAT_CSS = """
+<style>
+/* === Message bubbles === */
+[data-testid="stChatMessage"] {
+    background: transparent !important;
+    border: none !important;
+    padding: 6px 0 !important;
+    margin-bottom: 6px !important;
+    box-shadow: none !important;
+}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+    flex-direction: row-reverse;
+    margin-left: auto;
+    max-width: 85%;
+    background: #ffffff !important;
+    border: 1px solid #e3e3e6 !important;
+    border-radius: 18px !important;
+    padding: 10px 14px !important;
+}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) > div:last-child {
+    text-align: left;
+}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) {
+    max-width: 100%;
+    padding: 6px 0 !important;
+}
+[data-testid="stChatMessageAvatarUser"],
+[data-testid="stChatMessageAvatarAssistant"] {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 14px !important;
+}
+[data-testid="stChatMessage"] p {
+    margin-bottom: 0;
+    line-height: 1.55;
+}
+
+/* === Right "chat sidebar" — mirrors the left native sidebar === */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
+    background: #f0f2f6 !important;
+    border-left: 1px solid #d6d8de !important;
+    padding: 1.5rem 1.25rem !important;
+    border-radius: 0 !important;
+    min-height: calc(100vh - 6rem);
+}
+
+/* === Chat input box: visibly separated from the messages panel === */
+[data-testid="stChatInput"] {
+    border: 1.5px solid #e0e0e0 !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    margin-top: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+[data-testid="stChatInput"]:focus-within {
+    border-color: #7c6cff !important;
+    box-shadow: 0 0 0 3px rgba(124, 108, 255, 0.12) !important;
+}
+</style>
+"""
+
+EMPTY_STATE_HTML = """
+<div style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    text-align: center;
+    padding: 60px 20px;
+">
+    <div style="font-size: 44px; margin-bottom: 16px;">💬</div>
+    <div style="font-size: 18px; font-weight: 500; color: #555;">Ask me anything</div>
+    <div style="font-size: 13px; margin-top: 8px;">
+        Upload a PDF on the left to ground answers in a document.
+    </div>
+</div>
+"""
 
 
 def _file_hash(data: bytes) -> str:
@@ -41,6 +125,7 @@ def _build_store(uploaded_file) -> VectorStore:
 
 def main():
     st.title("AskEdgar — AI Analyst for SEC Filings")
+    st.markdown(CHAT_CSS, unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -59,11 +144,22 @@ def main():
             data = uploaded.getvalue()
             new_hash = _file_hash(data)
             if st.session_state.store_hash != new_hash:
-                with st.spinner(f"Indexing {uploaded.name}..."):
-                    st.session_state.store = _build_store(uploaded)
-                    st.session_state.store_hash = new_hash
-                    st.session_state.last_figure = None
-                st.toast(f"Indexed {uploaded.name} ({len(st.session_state.store)} chunks)")
+                try:
+                    with st.spinner(f"Indexing {uploaded.name}..."):
+                        st.session_state.store = _build_store(uploaded)
+                        st.session_state.store_hash = new_hash
+                        st.session_state.last_figure = None
+                    st.toast(f"Indexed {uploaded.name} ({len(st.session_state.store)} chunks)")
+                except PDFTextExtractionError as e:
+                    st.error(str(e))
+                    st.session_state.store = None
+                    st.session_state.store_hash = None
+                    st.stop()
+                except Exception as e:
+                    st.error(f"Indexing failed: {e}")
+                    st.session_state.store = None
+                    st.session_state.store_hash = None
+                    st.stop()
 
         if st.session_state.store is not None:
             st.success(f"Loaded: **{st.session_state.store.name}**\n\n{len(st.session_state.store)} chunks indexed")
@@ -82,59 +178,7 @@ def main():
             st.session_state.last_figure = None
             st.rerun()
 
-    chat_col, viz_col = st.columns([3, 2], gap="large")
-
-    with chat_col:
-        st.subheader("Chat")
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
-                if msg.get("chunks"):
-                    with st.expander(f"Sources ({len(msg['chunks'])} passages)"):
-                        for i, c in enumerate(msg["chunks"], 1):
-                            st.markdown(f"**[{i}] {c['section']} · p.{c['page']}**")
-                            preview = c["text"][:1500] + ("..." if len(c["text"]) > 1500 else "")
-                            st.text(preview)
-                if msg.get("tool_calls"):
-                    for j, tc in enumerate(msg["tool_calls"], 1):
-                        with st.expander(f"Code (call {j})"):
-                            st.code(tc["code"], language="python")
-                            if tc["stdout"]:
-                                st.text(tc["stdout"])
-                            if tc["error"]:
-                                st.error(tc["error"])
-
-        prompt = st.chat_input("Ask anything — upload a PDF on the left to ground the answer")
-        if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.markdown(prompt)
-            with st.chat_message("assistant"):
-                with st.spinner("Thinking..."):
-                    resp = ask(
-                        prompt,
-                        store=st.session_state.store,
-                        enable_tool=st.session_state.store is not None,
-                    )
-                st.markdown(resp.answer)
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": resp.answer,
-                        "chunks": resp.chunks,
-                        "tool_calls": [
-                            {
-                                "code": tc.code,
-                                "stdout": tc.result.stdout,
-                                "error": tc.result.error,
-                            }
-                            for tc in resp.tool_calls
-                        ],
-                    }
-                )
-                if resp.figure is not None:
-                    st.session_state.last_figure = resp.figure
-                st.rerun()
+    viz_col, chat_col = st.columns([2, 3], gap="large")
 
     with viz_col:
         st.subheader("Visualization")
@@ -147,6 +191,64 @@ def main():
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.pyplot(fig)
+
+    with chat_col:
+        # Messages: scrollable area inside the right panel
+        history = st.container(height=600, border=False)
+        with history:
+            if not st.session_state.messages:
+                st.markdown(EMPTY_STATE_HTML, unsafe_allow_html=True)
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"], avatar="🧑" if msg["role"] == "user" else "🤖"):
+                    st.markdown(msg["content"])
+                    if msg.get("chunks"):
+                        with st.expander(f"Sources ({len(msg['chunks'])} passages)"):
+                            for i, c in enumerate(msg["chunks"], 1):
+                                st.markdown(f"**[{i}] {c['section']} · p.{c['page']}**")
+                                preview = c["text"][:1500] + ("..." if len(c["text"]) > 1500 else "")
+                                st.text(preview)
+                    if msg.get("tool_calls"):
+                        for j, tc in enumerate(msg["tool_calls"], 1):
+                            with st.expander(f"Code (call {j})"):
+                                st.code(tc["code"], language="python")
+                                if tc["stdout"]:
+                                    st.text(tc["stdout"])
+                                if tc["error"]:
+                                    st.error(tc["error"])
+
+        # Input: visually separated below the messages panel
+        prompt = st.chat_input("Ask anything — upload a PDF on the left to ground the answer")
+        if prompt:
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with history:
+                with st.chat_message("user", avatar="🧑"):
+                    st.markdown(prompt)
+                with st.chat_message("assistant", avatar="🤖"):
+                    with st.spinner("Thinking..."):
+                        resp = ask(
+                            prompt,
+                            store=st.session_state.store,
+                            enable_tool=st.session_state.store is not None,
+                        )
+                    st.markdown(resp.answer)
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": resp.answer,
+                    "chunks": resp.chunks,
+                    "tool_calls": [
+                        {
+                            "code": tc.code,
+                            "stdout": tc.result.stdout,
+                            "error": tc.result.error,
+                        }
+                        for tc in resp.tool_calls
+                    ],
+                }
+            )
+            if resp.figure is not None:
+                st.session_state.last_figure = resp.figure
+            st.rerun()
 
 
 if __name__ == "__main__":

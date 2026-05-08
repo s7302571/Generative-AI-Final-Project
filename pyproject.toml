@@ -8,6 +8,7 @@ dependencies = [
     "claude-agent-sdk>=0.1.0",
     "streamlit>=1.40.0",
     "pdfplumber>=0.11.0",
+    "pypdf>=5.0.0",
     "faiss-cpu>=1.8.0",
     "sentence-transformers>=3.0.0",
     "pandas>=2.2.0",

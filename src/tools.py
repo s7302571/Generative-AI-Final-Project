@@ -15,6 +15,7 @@ from __future__ import annotations
 import io
 import signal
 import sys
+import threading
 import traceback
 from contextlib import redirect_stdout
 from dataclasses import dataclass
@@ -61,18 +62,29 @@ class CodeResult:
 
 
 class _Timeout:
+    """SIGALRM-based timeout. No-op when not running in the main thread —
+    `signal.signal` is main-thread-only, and Streamlit runs each script in a
+    worker thread, so we silently drop the timeout there. The eval CLI runs
+    in the main thread and gets real enforcement.
+    """
+
     def __init__(self, seconds: int):
         self.seconds = seconds
+        self._installed = False
 
     def __enter__(self):
+        if threading.current_thread() is not threading.main_thread():
+            return
         def handler(signum, frame):
             raise TimeoutError(f"Code execution exceeded {self.seconds}s")
         self._prev = signal.signal(signal.SIGALRM, handler)
         signal.alarm(self.seconds)
+        self._installed = True
 
     def __exit__(self, *exc):
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, self._prev)
+        if self._installed:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, self._prev)
 
 
 def run_python(code: str) -> CodeResult:
