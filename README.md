@@ -27,12 +27,28 @@ Use the upload control in the sidebar to attach a 10-K PDF. Without an upload, t
 
 The eval harness expects PDFs at `data/filings/<filing_id>.pdf`, where `<filing_id>` matches the IDs in `eval/test_set.json` (e.g. `AAPL_10K_2023.pdf`).
 
+The pipeline has three stages, each writing to `eval/results/` with fixed filenames (every run overwrites the previous):
+
+| Stage | Command | Output |
+| --- | --- | --- |
+| 1. Run models (calls API) | `uv run python -m eval.run_eval` | `full.json`, `rag_only.json` |
+| 2. Grade vs. ground truth | `uv run python -m eval.grader` | `graded_full.json`, `graded_rag_only.json` |
+| 3. Aggregate into report | `uv run python -m eval.aggregate` | `report.md` |
+
+One-shot all three stages:
+
 ```bash
-uv run python -m eval.run_eval                # full system + RAG-only baseline
-uv run python -m eval.run_eval --system full  # one system only
+uv run python -m eval.pipeline                # full system + RAG-only baseline
+uv run python -m eval.pipeline --system full  # one system only
 ```
 
-Writes per-question results to `eval/results/`. Scoring against ground truth is left as a TODO in `run_eval.py` — fill it in once the test set has real Q&A pairs.
+Run stages individually when iterating on the grader/report without re-spending API credits — Stage 2 and Stage 3 read the JSON written by Stage 1, so you can re-grade and re-aggregate as many times as you want for free:
+
+```bash
+uv run python -m eval.run_eval     # Stage 1 only — re-runs models
+uv run python -m eval.grader       # Stage 2 only — re-grades existing results
+uv run python -m eval.aggregate    # Stage 3 only — rebuilds report.md
+```
 
 ## Structure
 
