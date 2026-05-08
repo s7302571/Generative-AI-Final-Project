@@ -1,0 +1,596 @@
+[
+  {
+    "id": "AAPL-2025-lookup-01",
+    "type": "lookup",
+    "answer": "Apple's total net sales in fiscal year 2025 were $416,161 million (approximately $416.2 billion), a 6% increase from $391,035 million in fiscal year 2024. (Source: Passage 2 and Passage 5 \u2014 Consolidated Statements of Operations)",
+    "structured_answer": {
+      "value": 416161,
+      "unit": "millions_USD",
+      "fy2025": 416161,
+      "fy2024": 391035,
+      "fy2023": 383285,
+      "yoy_growth_pct": 6.43
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 173,
+    "latency_s": 6.84,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-02",
+    "type": "lookup",
+    "answer": "Apple's net income in fiscal year 2025 was $112,010 million (approximately $112.0 billion), up from $93,736 million in FY2024. (Source: Passage 1 \u2014 Consolidated Statements of Operations.)",
+    "structured_answer": {
+      "value": 112010,
+      "unit": "millions_USD",
+      "fy2025_net_income": 112010,
+      "fy2024_net_income": 93736,
+      "fy2023_net_income": 96995
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 152,
+    "latency_s": 6.62,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-03",
+    "type": "lookup",
+    "answer": "Apple's iPhone net sales in fiscal year 2025 were $209,586 million (approximately $209.6 billion), according to the disaggregated net sales table in Item 8 (Note 2/Revenue), p.31.",
+    "structured_answer": {
+      "value": 209586,
+      "unit": "millions_USD",
+      "fiscal_year": 2025
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 121,
+    "latency_s": 7.81,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-04",
+    "type": "lookup",
+    "answer": "Apple's research and development expense in fiscal year 2025 was $34,550 million (approximately $34.55 billion), a 10% increase from $31,370 million in fiscal year 2024. (Source: Passage 1, Item 7 MD&A, p.24)",
+    "structured_answer": {
+      "value": 34550,
+      "unit": "millions_USD",
+      "fy2025": 34550,
+      "fy2024": 31370,
+      "fy2023": 29915,
+      "yoy_change_pct": 10
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 164,
+    "latency_s": 8.38,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-05",
+    "type": "lookup",
+    "answer": "Apple's total liabilities and shareholders' equity as of September 27, 2025 was $359,241 million, which equals total assets on the balance sheet (Passage 5).",
+    "structured_answer": {
+      "value": 359241,
+      "unit": "millions_USD"
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 92,
+    "latency_s": 6.21,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-01",
+    "type": "simple_calc",
+    "answer": "Apple's total net sales grew from $391,035 million in FY2024 to $416,161 million in FY2025, a year-over-year increase of approximately **6.43%** (the 10-K rounds this to 6%). Source: Passage 2 (Item 7, p.23) and Passage 4 (Note 2, p.36).",
+    "structured_answer": {
+      "value": 6.43,
+      "unit": "percent",
+      "fy2024_net_sales": 391035,
+      "fy2025_net_sales": 416161,
+      "absolute_change": 25126
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 311,
+    "latency_s": 9.06,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-02",
+    "type": "simple_calc",
+    "answer": "Apple's fiscal year 2025 operating margin was approximately **31.97%**, calculated by dividing operating income of $133,050 million by total net sales of $416,161 million (Passage 2, Consolidated Statements of Operations).",
+    "structured_answer": {
+      "value": 31.97,
+      "unit": "percent",
+      "operating_income_2025": 133050,
+      "total_net_sales_2025": 416161
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 219,
+    "latency_s": 7.12,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-03",
+    "type": "simple_calc",
+    "answer": "Apple's net income grew approximately **19.50%** year-over-year, rising from $93,736 million in FY2024 to $112,010 million in FY2025 \u2014 an absolute increase of $18,274 million. This jump was largely driven by a $10.7 billion year-over-year decrease in the provision for income taxes related to the State Aid Decision (Passage 1, Passage 2).",
+    "structured_answer": {
+      "value": 19.5,
+      "unit": "percent",
+      "net_income_fy2024": 93736,
+      "net_income_fy2025": 112010,
+      "absolute_change": 18274
+    },
+    "tool_calls": 1,
+    "had_figure": false,
+    "input_tokens": 13,
+    "output_tokens": 684,
+    "latency_s": 15.23,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-04",
+    "type": "simple_calc",
+    "answer": "Apple's fiscal 2025 net income margin was approximately **26.91%**, calculated as net income of $112,010M divided by total net sales of $416,161M (Passage 1).",
+    "structured_answer": {
+      "value": 26.91,
+      "unit": "percent",
+      "net_income_2025": 112010,
+      "total_net_sales_2025": 416161
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 187,
+    "latency_s": 6.63,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-05",
+    "type": "simple_calc",
+    "answer": "Apple's effective tax rate for fiscal year 2025 was approximately **15.6%**, computed as the $20,719M provision for income taxes divided by $132,729M of income before provision for income taxes. This matches the 15.6% effective tax rate disclosed in Item 7 of the 10-K (Passage 4) and is consistent with the Consolidated Statements of Operations (Passage 1).",
+    "structured_answer": {
+      "value": 15.61,
+      "unit": "percent",
+      "provision_for_income_taxes": 20719,
+      "income_before_provision_for_income_taxes": 132729,
+      "fiscal_year": 2025
+    },
+    "tool_calls": 1,
+    "had_figure": false,
+    "input_tokens": 13,
+    "output_tokens": 589,
+    "latency_s": 15.01,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-01",
+    "type": "complex_calc",
+    "answer": "In fiscal year 2025, Apple's **Services gross margin percentage (75.4%)** was substantially higher than its **Products gross margin percentage (36.8%)** \u2014 a gap of **38.6 percentage points**. This reflects the structurally higher profitability of Apple's Services business compared to its hardware products.\n\nSource: Passage 2 (Item 7, p. 23\u201324), Gross Margin table showing Products 36.8% and Services 75.4% for 2025.",
+    "structured_answer": {
+      "value": "Services",
+      "products_gross_margin_pct_2025": 36.8,
+      "services_gross_margin_pct_2025": 75.4,
+      "difference_pct_points": 38.6,
+      "unit": "percent"
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 347,
+    "latency_s": 12.45,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-02",
+    "type": "complex_calc",
+    "answer": "Apple's total net sales grew from $383,285M in FY2023 to $416,161M in FY2025, representing a 2-year CAGR of approximately **4.20%**. (Source: Passage 3 \u2014 Item 7 MD&A net sales table.)",
+    "structured_answer": {
+      "value": 4.2,
+      "unit": "percent",
+      "fy2023_net_sales": 383285,
+      "fy2025_net_sales": 416161,
+      "years": 2
+    },
+    "tool_calls": 1,
+    "had_figure": false,
+    "input_tokens": 13,
+    "output_tokens": 553,
+    "latency_s": 15.88,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-03",
+    "type": "complex_calc",
+    "answer": "The retrieved passages do not contain the figures needed to compute free cash flow. Specifically, neither \"cash generated by operating activities\" nor \"payments for acquisition of property, plant and equipment\" appears in the provided excerpts \u2014 those line items live in the Consolidated Statements of Cash Flows, which was not included in the retrieval. I can't calculate this without inventing numbers.\n\nIf you can pull the cash flow statement (typically on the page following the income statement and balance sheet in Item 8), I can compute it precisely.",
+    "structured_answer": {
+      "value": null,
+      "reason": "Retrieved passages do not include the Consolidated Statements of Cash Flows; cash from operating activities and capital expenditures for FY2025 are not present."
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 373,
+    "latency_s": 13.41,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-04",
+    "type": "complex_calc",
+    "answer": "**Services** had the largest absolute net sales increase from FY2024 to FY2025, growing by **$12,989 million** (from $96,169M to $109,158M, a 14% increase). This outpaced iPhone's increase of $8,403M, Mac's $3,724M, and iPad's $1,329M, while Wearables, Home and Accessories actually declined by $1,319M. (Source: Passages 1, 3, and 5 \u2014 disaggregated net sales table.)",
+    "structured_answer": {
+      "value": "Services",
+      "increase_millions_USD": 12989,
+      "services_2024": 96169,
+      "services_2025": 109158,
+      "iphone_increase": 8403,
+      "mac_increase": 3724,
+      "ipad_increase": 1329,
+      "wearables_increase": -1319,
+      "unit": "millions_USD"
+    },
+    "tool_calls": 1,
+    "had_figure": false,
+    "input_tokens": 13,
+    "output_tokens": 915,
+    "latency_s": 17.79,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-05",
+    "type": "complex_calc",
+    "answer": "Apple's net income figure is not stated directly in the retrieved passages, but it can be derived from the provision for income taxes and effective tax rate disclosed in Passage 1 / Passage 4 (Provision \u00f7 Effective tax rate \u2212 Provision = Net income). Using that approach, derived net income was ~$97,143M in FY2023 and ~$112,095M in FY2025, implying a 2-year CAGR of approximately **7.4%**. Note this is a derived figure; small rounding in the disclosed effective tax rates introduces minor imprecision.",
+    "structured_answer": {
+      "value": 7.42,
+      "unit": "percent",
+      "net_income_2023_derived_millions_USD": 97143,
+      "net_income_2025_derived_millions_USD": 112095,
+      "provision_2023": 16741,
+      "effective_tax_rate_2023_pct": 14.7,
+      "provision_2025": 20719,
+      "effective_tax_rate_2025_pct": 15.6,
+      "method": "derived from provision for income taxes and effective tax rate; net income not directly provided in retrieved passages"
+    },
+    "tool_calls": 1,
+    "had_figure": false,
+    "input_tokens": 13,
+    "output_tokens": 2116,
+    "latency_s": 31.33,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-06",
+    "type": "complex_calc",
+    "answer": "Apple's working capital as of September 27, 2025 was **negative $17,674 million** (i.e., current liabilities exceeded current assets by about $17.7 billion). This is calculated from total current assets of $147,957 million minus total current liabilities of $165,631 million, per the Consolidated Balance Sheet (Passage 3).",
+    "structured_answer": {
+      "value": -17674,
+      "unit": "millions_USD",
+      "total_current_assets": 147957,
+      "total_current_liabilities": 165631
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 226,
+    "latency_s": 6.48,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-01",
+    "type": "viz",
+    "answer": "Apple's net sales split between Products and Services over the past three fiscal years:\n\n| Fiscal Year | Products | Services | Total |\n|---|---|---|---|\n| FY2023 | $298,085M (77.8%) | $85,200M (22.2%) | $383,285M |\n| FY2024 | $294,866M (75.4%) | $96,169M (24.6%) | $391,035M |\n| FY2025 | $307,003M (73.8%) | $109,158M (26.2%) | $416,161M |\n\nServices revenue grew steadily each year (+13% in FY24, +14% in FY25) and now represents over a quarter of total net sales, while Products revenue dipped in FY24 before recovering in FY25. Services figures come directly from the disaggregated revenue table; Products is computed as Total Net Sales minus Services. See the stacked bar chart in the viz panel. (Sources: Passage 2 and Passage 4.)",
+    "structured_answer": {
+      "products_2023": 298085,
+      "products_2024": 294866,
+      "products_2025": 307003,
+      "services_2023": 85200,
+      "services_2024": 96169,
+      "services_2025": 109158,
+      "total_2023": 383285,
+      "total_2024": 391035,
+      "total_2025": 416161,
+      "services_share_2023_pct": 22.2,
+      "services_share_2024_pct": 24.6,
+      "services_share_2025_pct": 26.2,
+      "unit": "millions_USD"
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1374,
+    "latency_s": 21.3,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-02",
+    "type": "viz",
+    "answer": "In fiscal year 2025, Apple's $416,161M in net sales broke down as: Americas $178,353M (42.9%), Europe $111,032M (26.7%), Greater China $64,377M (15.5%), Japan $28,703M (6.9%), and Rest of Asia Pacific $33,696M (8.1%). The Americas remained Apple's largest market by a wide margin. See the bar chart in the viz panel for the visual breakdown. (Source: Passage 2 \u2014 Item 8, Note on segment reporting, p.47)",
+    "structured_answer": {
+      "value": 416161,
+      "unit": "millions_USD",
+      "americas": 178353,
+      "europe": 111032,
+      "greater_china": 64377,
+      "japan": 28703,
+      "rest_of_asia_pacific": 33696,
+      "americas_pct": 42.86,
+      "europe_pct": 26.68,
+      "greater_china_pct": 15.47,
+      "japan_pct": 6.9,
+      "rest_of_asia_pacific_pct": 8.1
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 939,
+    "latency_s": 19.39,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-03",
+    "type": "viz",
+    "answer": "Apple's operating income grew steadily over the three-year period, rising from **$114,301M in FY2023** to **$123,216M in FY2024** (+7.80% YoY) and then to **$133,050M in FY2025** (+7.98% YoY), representing a 2-year CAGR of approximately 7.89%. See the chart in the viz panel for the visual trend. (Source: Passage 5 \u2014 Consolidated Statements of Operations.)",
+    "structured_answer": {
+      "value": [
+        114301,
+        123216,
+        133050
+      ],
+      "fy2023": 114301,
+      "fy2024": 123216,
+      "fy2025": 133050,
+      "yoy_2024_pct": 7.8,
+      "yoy_2025_pct": 7.98,
+      "cagr_2yr_pct": 7.89,
+      "unit": "millions_USD"
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1204,
+    "latency_s": 22.93,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-04",
+    "type": "viz",
+    "answer": "Apple's FY2025 net sales totaled $416,161M, with iPhone the largest category at $209,586M (~50.4%), followed by Services at $109,158M (~26.2%), Wearables/Home/Accessories at $35,686M (~8.6%), Mac at $33,708M (~8.1%), and iPad at $28,023M (~6.7%). See the bar chart in the viz panel for the breakdown. (Source: Passages 1 and 4 \u2014 disaggregated net sales table.)",
+    "structured_answer": {
+      "value": 416161,
+      "unit": "millions_USD",
+      "iphone_2025": 209586,
+      "mac_2025": 33708,
+      "ipad_2025": 28023,
+      "wearables_home_accessories_2025": 35686,
+      "services_2025": 109158,
+      "total_net_sales_2025": 416161,
+      "iphone_pct": 50.36,
+      "mac_pct": 8.1,
+      "ipad_pct": 6.73,
+      "wearables_home_accessories_pct": 8.58,
+      "services_pct": 26.23
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1033,
+    "latency_s": 20.4,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-06",
+    "type": "lookup",
+    "answer": "Apple's cash and cash equivalents balance as of September 27, 2025 was **$35,934 million** (approximately $35.9 billion). This is shown in the fair value summary table in Passage 1, where the FY2025 totals reconcile to the $132.4 billion combined cash, cash equivalents, and marketable securities figure cited in Passage 4.",
+    "structured_answer": {
+      "value": 35934,
+      "unit": "millions_USD",
+      "as_of_date": "2025-09-27"
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 746,
+    "latency_s": 15.28,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-lookup-07",
+    "type": "lookup",
+    "answer": "The retrieved passages do not contain a specific figure for Apple's Greater China net sales in fiscal year 2025. While Passage 5 mentions Greater China in the context of iPhone revenue representing a moderately higher proportion of net sales there, the actual segment net sales figure for Greater China is not included in the provided passages (it would typically appear in Note 13 \"Segment Information and Geographic Data,\" which was not retrieved).",
+    "structured_answer": {
+      "value": null,
+      "reason": "passages do not contain the Greater China segment net sales figure for fiscal year 2025"
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 196,
+    "latency_s": 6.97,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-06",
+    "type": "simple_calc",
+    "answer": "As of September 27, 2025, Apple's total liabilities were $285,508M and total assets were $359,241M, yielding a total liabilities to total assets ratio of approximately **79.48%**. This indicates that roughly 79.5% of Apple's assets are financed by liabilities (Source: Passage 1 \u2014 Consolidated Balance Sheets).",
+    "structured_answer": {
+      "value": 79.48,
+      "unit": "percent",
+      "total_liabilities": 285508,
+      "total_assets": 359241,
+      "liabilities_to_assets_ratio": 0.7948
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 603,
+    "latency_s": 12.8,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-simple-07",
+    "type": "simple_calc",
+    "answer": "Apple's Services net sales grew from $96,169 million in FY2024 to $109,158 million in FY2025, an increase of $12,989 million, or approximately **13.51%** year-over-year (Apple rounds this to 14% in the 10-K). Source: Passage 2 / Passage 4 (disaggregated net sales table).",
+    "structured_answer": {
+      "value": 13.51,
+      "unit": "percent",
+      "services_fy2024": 96169,
+      "services_fy2025": 109158,
+      "absolute_change_millions_usd": 12989,
+      "filing_rounded_pct": 14
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 442,
+    "latency_s": 12.08,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-07",
+    "type": "complex_calc",
+    "answer": "**Japan** posted the highest year-over-year net sales growth among Apple's reportable geographic segments, increasing from $25,052M in FY2024 to $28,703M in FY2025 \u2014 a gain of roughly **14.57%**. For comparison, Rest of Asia Pacific grew 9.91%, Europe 9.58%, Americas 6.77%, while Greater China declined 3.85% (Passage 2, Item 8 segment table).",
+    "structured_answer": {
+      "value": "Japan",
+      "unit": "percent",
+      "japan_growth_pct": 14.57,
+      "americas_growth_pct": 6.77,
+      "europe_growth_pct": 9.58,
+      "greater_china_growth_pct": -3.85,
+      "rest_of_asia_pacific_growth_pct": 9.91,
+      "japan_fy2024": 25052,
+      "japan_fy2025": 28703,
+      "americas_fy2024": 167045,
+      "americas_fy2025": 178353,
+      "europe_fy2024": 101328,
+      "europe_fy2025": 111032,
+      "greater_china_fy2024": 66952,
+      "greater_china_fy2025": 64377,
+      "rest_of_asia_pacific_fy2024": 30658,
+      "rest_of_asia_pacific_fy2025": 33696
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1428,
+    "latency_s": 27.61,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-08",
+    "type": "complex_calc",
+    "answer": "Services rose from about 22.23% of Apple's total net sales in FY2023 ($85,200M / $383,285M) to about 26.23% in FY2025 ($109,158M / $416,161M) \u2014 an increase of roughly **4.0 percentage points**. (Source: Passages 2 & 3, disaggregated net sales table.)",
+    "structured_answer": {
+      "value": 4.0,
+      "unit": "percent_points",
+      "services_2023": 85200,
+      "total_net_sales_2023": 383285,
+      "services_share_2023_pct": 22.23,
+      "services_2025": 109158,
+      "total_net_sales_2025": 416161,
+      "services_share_2025_pct": 26.23
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1001,
+    "latency_s": 21.81,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-complex-09",
+    "type": "complex_calc",
+    "answer": "Apple's R&D intensity rose modestly from FY2023 to FY2025. Using the figures in Passage 1 and Passage 2: R&D was $29,915M on $383,285M of net sales in FY2023 (\u22487.80%) and $34,550M on $416,161M in FY2025 (\u22488.30%) \u2014 an increase of roughly **0.50 percentage points**. Note that the 10-K rounds both years to 8% in its disclosed \"Percentage of total net sales\" line.",
+    "structured_answer": {
+      "value": 0.5,
+      "unit": "percent_points",
+      "rd_2023": 29915,
+      "net_sales_2023": 383285,
+      "rd_intensity_2023_pct": 7.8,
+      "rd_2025": 34550,
+      "net_sales_2025": 416161,
+      "rd_intensity_2025_pct": 8.3,
+      "filing_disclosed_pct_2023": 8,
+      "filing_disclosed_pct_2025": 8
+    },
+    "tool_calls": 0,
+    "had_figure": false,
+    "input_tokens": 6,
+    "output_tokens": 500,
+    "latency_s": 10.93,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-05",
+    "type": "viz",
+    "answer": "Apple's diluted EPS was **$6.13** in FY2023, dipped slightly to **$6.08** in FY2024 (-0.8% YoY), then jumped to **$7.46** in FY2025 (+22.7% YoY) \u2014 driven largely by higher net income and a lower share count from buybacks. See the bar chart in the visualization panel. (Source: Passage 5, Consolidated Statements of Operations, p.29)",
+    "structured_answer": {
+      "value": {
+        "fy2023": 6.13,
+        "fy2024": 6.08,
+        "fy2025": 7.46
+      },
+      "unit": "USD_per_share",
+      "fy2024_yoy_pct": -0.82,
+      "fy2025_yoy_pct": 22.7
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1090,
+    "latency_s": 20.18,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-06",
+    "type": "viz",
+    "answer": "As of September 27, 2025, Apple's balance sheet totaled **$359,241M** in assets, financed by **$285,508M of liabilities (79.5%)** and **$73,733M of shareholders' equity (20.5%)**. The accounting equation balances exactly. See the stacked bar chart in the viz panel for a visual breakdown. (Source: Passage 1 \u2014 Consolidated Balance Sheets, p.31.)",
+    "structured_answer": {
+      "value": 359241,
+      "total_assets": 359241,
+      "total_liabilities": 285508,
+      "total_shareholders_equity": 73733,
+      "liabilities_pct_of_assets": 79.48,
+      "equity_pct_of_assets": 20.52,
+      "unit": "millions_USD",
+      "as_of_date": "2025-09-27"
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 1244,
+    "latency_s": 24.11,
+    "error": null
+  },
+  {
+    "id": "AAPL-2025-viz-07",
+    "type": "viz",
+    "answer": "Apple's research and development expense rose each year, from **$29,915M in FY2023** to **$31,370M in FY2024** (+4.9%) and **$34,550M in FY2025** (+10.1%). The FY2025 acceleration was driven primarily by higher headcount-related expenses and infrastructure costs (Passage 1 / Passage 5). See the bar chart in the visualization panel.",
+    "structured_answer": {
+      "value": {
+        "fy2023": 29915,
+        "fy2024": 31370,
+        "fy2025": 34550
+      },
+      "unit": "millions_USD",
+      "yoy_growth_fy2024_pct": 4.86,
+      "yoy_growth_fy2025_pct": 10.14
+    },
+    "tool_calls": 1,
+    "had_figure": true,
+    "input_tokens": 13,
+    "output_tokens": 985,
+    "latency_s": 18.19,
+    "error": null
+  }
+]
