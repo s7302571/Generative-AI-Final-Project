@@ -1,46 +1,43 @@
-"""PDF -> chunks -> embeddings -> ChromaDB.
+"""PDF -> text chunks. Pure — no DB, no embeddings.
 
-A 10-K is split on heuristic section-header boundaries; tables stay intact in the
-chunk that contains them. For an MVP this is good enough — refine the splitter
-when you see specific failure modes in eval.
+Tries to split on SEC-style section headers ("Item 7A.", "PART II", ...) so a
+10-K is grouped sensibly. PDFs without those headers fall through to the
+size-based windowing in `_chunk_pages` and still produce reasonable chunks.
 """
 
 from __future__ import annotations
 
+import io
 import re
 from pathlib import Path
 
-import chromadb
 import pdfplumber
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
 from . import config
 
-# Headings like "Item 1.", "ITEM 7A.", "PART II"
 SECTION_HEADER = re.compile(
     r"^\s*(ITEM\s+\d+[A-Z]?\.?|PART\s+[IVX]+)\b.*$",
     re.IGNORECASE | re.MULTILINE,
 )
 
 
-def _extract_pages(pdf_path: Path) -> list[tuple[int, str]]:
+def _extract_pages(pdf_source) -> list[tuple[int, str]]:
     pages = []
-    with pdfplumber.open(pdf_path) as pdf:
+    with pdfplumber.open(pdf_source) as pdf:
         for page_num, page in enumerate(pdf.pages, start=1):
             text = page.extract_text() or ""
             tables = page.extract_tables() or []
             if tables:
-                table_blocks = []
+                blocks = []
                 for t in tables:
                     rows = ["\t".join((c or "") for c in row) for row in t]
-                    table_blocks.append("\n".join(rows))
-                text = text + "\n\n[TABLE]\n" + "\n\n".join(table_blocks)
+                    blocks.append("\n".join(rows))
+                text = text + "\n\n[TABLE]\n" + "\n\n".join(blocks)
             pages.append((page_num, text))
     return pages
 
 
 def _chunk_pages(pages: list[tuple[int, str]]) -> list[dict]:
-    """Group pages by section header, then break long sections into windows."""
     chunks: list[dict] = []
     current_section = "Front Matter"
     buffer: list[tuple[int, str]] = []
@@ -53,7 +50,6 @@ def _chunk_pages(pages: list[tuple[int, str]]) -> list[dict]:
             buffer.clear()
             return
         first_page = buffer[0][0]
-        # Window long sections by character count (rough proxy for tokens).
         max_chars = config.CHUNK_TOKENS * 4
         overlap_chars = config.CHUNK_OVERLAP * 4
         if len(text) <= max_chars:
@@ -80,39 +76,9 @@ def _chunk_pages(pages: list[tuple[int, str]]) -> list[dict]:
     return chunks
 
 
-def _embedding_fn():
-    return SentenceTransformerEmbeddingFunction(model_name=config.EMBEDDING_MODEL)
+def chunks_from_pdf_path(path: Path) -> list[dict]:
+    return _chunk_pages(_extract_pages(path))
 
 
-def _client():
-    return chromadb.PersistentClient(path=str(config.INDEX_DIR))
-
-
-def collection_name(filing_id: str) -> str:
-    return f"filing_{filing_id}"
-
-
-def ingest_filing(pdf_path: Path, filing_id: str) -> int:
-    """Ingest a 10-K PDF. Idempotent — re-running replaces the collection."""
-    pages = _extract_pages(pdf_path)
-    chunks = _chunk_pages(pages)
-
-    client = _client()
-    name = collection_name(filing_id)
-    try:
-        client.delete_collection(name)
-    except Exception:
-        pass
-    coll = client.create_collection(name=name, embedding_function=_embedding_fn())
-
-    coll.add(
-        ids=[f"{filing_id}_{i}" for i in range(len(chunks))],
-        documents=[c["text"] for c in chunks],
-        metadatas=[{"section": c["section"], "page": c["page"]} for c in chunks],
-    )
-    return len(chunks)
-
-
-def list_filings() -> list[str]:
-    client = _client()
-    return [c.name.removeprefix("filing_") for c in client.list_collections() if c.name.startswith("filing_")]
+def chunks_from_pdf_bytes(data: bytes) -> list[dict]:
+    return _chunk_pages(_extract_pages(io.BytesIO(data)))

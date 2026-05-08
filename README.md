@@ -15,17 +15,17 @@ uv sync
 cp .env.example .env  # then edit .env to add ANTHROPIC_API_KEY
 ```
 
-Drop one or more 10-K PDFs into `data/filings/` (filename = `<TICKER>_10K_<YEAR>.pdf` is the convention used by the eval test set).
-
 ## Run
 
 ```bash
 uv run streamlit run app.py
 ```
 
-The app auto-indexes any new PDFs on startup.
+Use the upload control in the sidebar to attach a 10-K PDF. Without an upload, the chat runs in general-assistant mode (no RAG, no tool). After uploading, questions are answered against the document and the model can call `run_python` for computations / charts.
 
 ## Eval
+
+The eval harness expects PDFs at `data/filings/<filing_id>.pdf`, where `<filing_id>` matches the IDs in `eval/test_set.json` (e.g. `AAPL_10K_2023.pdf`).
 
 ```bash
 uv run python -m eval.run_eval                # full system + RAG-only baseline
@@ -37,19 +37,18 @@ Writes per-question results to `eval/results/`. Scoring against ground truth is 
 ## Structure
 
 ```
-app.py                   Streamlit UI
+app.py                   Streamlit UI (upload + chat + viz)
 src/
 ├── config.py            Model, paths, chunk/retrieval params
-├── prompts.py           System prompt + retrieved-context formatter
-├── ingest.py            PDF → chunks → embeddings → ChromaDB
-├── retrieve.py          Vector search
+├── prompts.py           System prompts (general + filing) + context formatter
+├── ingest.py            PDF → text chunks (pure)
+├── vectorstore.py       FAISS index built from chunks (in-memory, per upload)
 ├── tools.py             Sandboxed run_python tool
-└── agent.py             LLM loop with tool use
+└── agent.py             Claude Agent SDK loop, optional store + tool
 eval/
 ├── test_set.json        Q&A pairs with ground truth
 └── run_eval.py          Compare full vs RAG-only systems
-data/filings/            Drop PDFs here (gitignored)
-data/index/              ChromaDB persistent store (gitignored)
+data/filings/            Optional: PDFs the eval harness loads (gitignored)
 ```
 
 ## Notes
@@ -57,3 +56,4 @@ data/index/              ChromaDB persistent store (gitignored)
 - **Sandbox**: `src/tools.py` uses a SIGALRM-based timeout; macOS/Linux only.
 - **Model**: defaults to `claude-opus-4-7`. Set `ASKEDGAR_MODEL=claude-sonnet-4-6` in `.env` to trade intelligence for cost.
 - **Embeddings**: `sentence-transformers/all-MiniLM-L6-v2` (free, local). The first run downloads ~80MB to the HF cache.
+- **Vector store**: FAISS `IndexFlatIP` over L2-normalized embeddings (cosine similarity). Lives in `st.session_state` only — uploads are not persisted across app restarts.

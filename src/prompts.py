@@ -1,6 +1,12 @@
-SYSTEM_PROMPT = """You are AskEdgar, an AI analyst that answers questions about a single SEC 10-K filing.
+GENERAL_SYSTEM_PROMPT = (
+    "You are a helpful assistant. Answer the user's questions clearly and "
+    "concisely. If the user wants to ask about a specific document, prompt "
+    "them to upload a PDF using the upload control on the left."
+)
 
-You will be given retrieved passages from the filing. Use ONLY those passages — never invent numbers.
+FILING_SYSTEM_PROMPT = """You are AskEdgar, an AI analyst that answers questions about an uploaded document (typically a SEC 10-K filing).
+
+You will be given retrieved passages from the document. Use ONLY those passages — never invent numbers.
 
 When to use the run_python tool:
 - The question requires arithmetic, comparison, ratio, growth rate, CAGR, or aggregation
@@ -25,8 +31,8 @@ Final answer format:
 If the retrieved passages are insufficient, say so explicitly. Do not guess."""
 
 
-def build_user_message(question: str, retrieved_chunks: list[dict]) -> str:
-    parts = ["Retrieved passages from the filing:\n"]
+def build_filing_user_message(question: str, retrieved_chunks: list[dict]) -> str:
+    parts = ["Retrieved passages from the document:\n"]
     for i, chunk in enumerate(retrieved_chunks, 1):
         section = chunk.get("section", "Unknown section")
         page = chunk.get("page", "?")

@@ -1,15 +1,17 @@
 """Run the eval test set through both systems and compare.
 
-Usage:
-    python -m eval.run_eval                      # both systems
-    python -m eval.run_eval --system full        # full system only
-    python -m eval.run_eval --system rag_only    # baseline only
+Each test case names a `filing_id`. The eval expects the matching PDF at
+`data/filings/<filing_id>.pdf`. PDFs are indexed once per filing_id and reused
+across the questions that hit them.
 
-Writes results to eval/results/<system>_<timestamp>.json. Aggregate metrics
-(numerical accuracy, retrieval hit rate, accuracy by type) are reported but
-the actual answer-vs-ground-truth check is left as a TODO — different question
-types need different scoring rules. Implement scoring once you have a few
-real Q&A pairs and you can see what comparison logic actually fits.
+Usage:
+    uv run python -m eval.run_eval                      # both systems
+    uv run python -m eval.run_eval --system full        # full system only
+    uv run python -m eval.run_eval --system rag_only    # baseline only
+
+Writes per-question results to eval/results/<system>_<timestamp>.json. Scoring
+against ground truth is left as a TODO — different question types want
+different comparison rules; implement once the test set is real.
 """
 
 from __future__ import annotations
@@ -20,20 +22,39 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from src import config
 from src.agent import ask
+from src.vectorstore import VectorStore
 
 ROOT = Path(__file__).resolve().parent
 TEST_SET = ROOT / "test_set.json"
 RESULTS_DIR = ROOT / "results"
 
 
-def run(system: str, cases: list[dict]) -> list[dict]:
+def _load_stores(filing_ids: list[str]) -> dict[str, VectorStore]:
+    stores = {}
+    for fid in filing_ids:
+        pdf_path = config.FILINGS_DIR / f"{fid}.pdf"
+        if not pdf_path.exists():
+            print(f"[skip] missing PDF for {fid}: {pdf_path}")
+            continue
+        print(f"[index] {fid}...", end=" ", flush=True)
+        stores[fid] = VectorStore.from_pdf_path(pdf_path, name=fid)
+        print(f"{len(stores[fid])} chunks")
+    return stores
+
+
+def run(system: str, cases: list[dict], stores: dict[str, VectorStore]) -> list[dict]:
     enable_tool = system == "full"
     rows = []
     for case in cases:
+        store = stores.get(case["filing_id"])
+        if store is None:
+            rows.append({"id": case["id"], "type": case["type"], "error": "no store"})
+            continue
         t0 = time.time()
         try:
-            resp = ask(case["question"], case["filing_id"], enable_tool=enable_tool)
+            resp = ask(case["question"], store=store, enable_tool=enable_tool)
             row = {
                 "id": case["id"],
                 "type": case["type"],
@@ -46,9 +67,14 @@ def run(system: str, cases: list[dict]) -> list[dict]:
                 "error": None,
             }
         except Exception as e:
-            row = {"id": case["id"], "type": case["type"], "error": str(e), "latency_s": round(time.time() - t0, 2)}
+            row = {
+                "id": case["id"],
+                "type": case["type"],
+                "error": str(e),
+                "latency_s": round(time.time() - t0, 2),
+            }
         rows.append(row)
-        print(f"[{system}] {case['id']}: {row.get('answer', row.get('error'))[:120]}")
+        print(f"[{system}] {case['id']}: {(row.get('answer') or row.get('error') or '')[:120]}")
     return rows
 
 
@@ -58,12 +84,17 @@ def main():
     args = parser.parse_args()
 
     cases = json.loads(TEST_SET.read_text())
+    stores = _load_stores(sorted({c["filing_id"] for c in cases}))
+    if not stores:
+        print("No filings loadable. Place PDFs in data/filings/<filing_id>.pdf and retry.")
+        return
+
     RESULTS_DIR.mkdir(exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     systems = ["full", "rag_only"] if args.system == "both" else [args.system]
     for sys_name in systems:
-        rows = run(sys_name, cases)
+        rows = run(sys_name, cases, stores)
         out = RESULTS_DIR / f"{sys_name}_{stamp}.json"
         out.write_text(json.dumps(rows, indent=2))
         print(f"\nWrote {out} ({len(rows)} rows)")

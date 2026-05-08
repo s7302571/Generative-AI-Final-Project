@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ROOT = Path(__file__).resolve().parent.parent
+# Optional convenience location for PDFs the eval harness loads. The Streamlit
+# app uploads files directly and never touches this directory.
 FILINGS_DIR = ROOT / "data" / "filings"
-INDEX_DIR = ROOT / "data" / "index"
 
 # Default to Opus 4.7. Override via ASKEDGAR_MODEL if you want to trade
 # intelligence for cost (claude-sonnet-4-6) or speed (claude-haiku-4-5).
