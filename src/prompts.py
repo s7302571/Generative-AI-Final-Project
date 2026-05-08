@@ -48,11 +48,23 @@ Examples:
 If the retrieved passages are insufficient, say so explicitly. Do not guess."""
 
 
-def build_filing_user_message(question: str, retrieved_chunks: list[dict]) -> str:
+def build_filing_user_message(
+    question: str,
+    retrieved_chunks: list[dict],
+    expected_keys: list[str] | None = None,
+) -> str:
     parts = ["Retrieved passages from the document:\n"]
     for i, chunk in enumerate(retrieved_chunks, 1):
         section = chunk.get("section", "Unknown section")
         page = chunk.get("page", "?")
         parts.append(f"[Passage {i} | {section} | p.{page}]\n{chunk['text']}\n")
     parts.append(f"\nQuestion: {question}")
+    if expected_keys:
+        keys_csv = ", ".join(expected_keys)
+        parts.append(
+            "\nThe <answer_json> block MUST include exactly these snake_case "
+            f"keys (verbatim spelling, no synonyms): {keys_csv}. "
+            "You may include additional keys, but the listed ones must be "
+            "present with their numeric values."
+        )
     return "\n".join(parts)

@@ -118,12 +118,13 @@ async def _ask_async(
     *,
     store: VectorStore | None,
     enable_tool: bool,
+    expected_keys: list[str] | None = None,
 ) -> AgentResponse:
     captured: dict = {"figure": None, "tool_calls": []}
 
     if store is not None:
         chunks = store.query(question)
-        prompt = build_filing_user_message(question, chunks)
+        prompt = build_filing_user_message(question, chunks, expected_keys=expected_keys)
         if enable_tool:
             server = create_sdk_mcp_server(
                 name="askedgar",
@@ -184,11 +185,17 @@ def ask(
     *,
     store: VectorStore | None = None,
     enable_tool: bool = True,
+    expected_keys: list[str] | None = None,
 ) -> AgentResponse:
     """Sync entrypoint.
 
     - store=None: plain chat, no retrieval, no tool.
     - store given, enable_tool=True: RAG + run_python (full system).
     - store given, enable_tool=False: RAG only, no tool (eval baseline).
+    - expected_keys: when set, the user message instructs the model to use
+      these exact snake_case keys in its <answer_json> block. Used by the eval
+      harness to keep model output aligned with the grader's schema.
     """
-    return asyncio.run(_ask_async(question, store=store, enable_tool=enable_tool))
+    return asyncio.run(
+        _ask_async(question, store=store, enable_tool=enable_tool, expected_keys=expected_keys)
+    )

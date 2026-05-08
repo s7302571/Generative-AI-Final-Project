@@ -64,8 +64,14 @@ def run(system: str, cases: list[dict], stores: dict[str, VectorStore]) -> list[
             rows.append({"id": case["id"], "type": case["type"], "error": "no store"})
             continue
         t0 = time.time()
+        expected_keys = list((case.get("expected_values") or {}).keys()) or None
         try:
-            resp = ask(case["question"], store=store, enable_tool=enable_tool)
+            resp = ask(
+                case["question"],
+                store=store,
+                enable_tool=enable_tool,
+                expected_keys=expected_keys,
+            )
             row = {
                 "id": case["id"],
                 "type": case["type"],
