@@ -19,7 +19,6 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from datetime import datetime
 from pathlib import Path
 
 from src import config
@@ -29,6 +28,18 @@ from src.vectorstore import VectorStore
 ROOT = Path(__file__).resolve().parent
 TEST_SET = ROOT / "test_set.json"
 RESULTS_DIR = ROOT / "results"
+
+
+def results_path(system: str) -> Path:
+    """Fixed filename per system; overwrites previous run."""
+    return RESULTS_DIR / f"{system}.json"
+
+
+def graded_path(system: str) -> Path:
+    return RESULTS_DIR / f"graded_{system}.json"
+
+
+REPORT_PATH = RESULTS_DIR / "report.md"
 
 
 def _load_stores(filing_ids: list[str]) -> dict[str, VectorStore]:
@@ -59,6 +70,7 @@ def run(system: str, cases: list[dict], stores: dict[str, VectorStore]) -> list[
                 "id": case["id"],
                 "type": case["type"],
                 "answer": resp.answer,
+                "structured_answer": resp.structured_answer,
                 "tool_calls": len(resp.tool_calls),
                 "had_figure": resp.figure is not None,
                 "input_tokens": resp.usage.get("input_tokens", 0),
@@ -90,12 +102,11 @@ def main():
         return
 
     RESULTS_DIR.mkdir(exist_ok=True)
-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     systems = ["full", "rag_only"] if args.system == "both" else [args.system]
     for sys_name in systems:
         rows = run(sys_name, cases, stores)
-        out = RESULTS_DIR / f"{sys_name}_{stamp}.json"
+        out = results_path(sys_name)
         out.write_text(json.dumps(rows, indent=2))
         print(f"\nWrote {out} ({len(rows)} rows)")
 

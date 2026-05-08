@@ -25,10 +25,10 @@
     "question": "Compare Apple's Products gross margin percentage vs. Services gross margin percentage in fiscal year 2025. Which is higher and by how many percentage points?",
     "type": "complex_calc",
     "expected_values": {
+      "value": "Services",
       "products_gross_margin_pct": 36.77,
       "services_gross_margin_pct": 75.41,
-      "difference_pct_points": 38.64,
-      "higher": "Services"
+      "difference_pct_points": 38.64
     },
     "tolerance_pct": 1.0,
     "source_hint": "Consolidated Statements of Operations FY2025: Products net sales $307,003M, Products cost of sales $194,116M -> margin 36.77%; Services net sales $109,158M, Services cost of sales $26,844M -> margin 75.41%; Services higher by ~38.6 pp"

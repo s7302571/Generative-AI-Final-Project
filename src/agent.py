@@ -19,6 +19,8 @@ around the async core via `asyncio.run`.
 from __future__ import annotations
 
 import asyncio
+import json
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -59,6 +61,36 @@ class AgentResponse:
     tool_calls: list[ToolCall] = field(default_factory=list)
     figure: Any | None = None
     usage: dict = field(default_factory=dict)
+    structured_answer: dict | None = None
+
+
+_ANSWER_JSON_RE = re.compile(
+    r"<answer_json>\s*(.*?)\s*</answer_json>",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def _split_answer(text: str) -> tuple[str, dict | None]:
+    """Pull the <answer_json>{...}</answer_json> block out of the model's reply.
+
+    Returns (prose_answer_with_tag_stripped, parsed_json_or_None). If the model
+    forgot the tag or the JSON is malformed, structured_answer is None and the
+    grader will fall back to regex/judge.
+    """
+    match = _ANSWER_JSON_RE.search(text)
+    if not match:
+        return text, None
+    raw = match.group(1).strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.DOTALL)
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return text, None
+    if not isinstance(parsed, dict):
+        return text, None
+    cleaned = _ANSWER_JSON_RE.sub("", text).rstrip()
+    return cleaned, parsed
 
 
 def _make_run_python_tool(captured: dict):
@@ -136,12 +168,14 @@ async def _ask_async(
                 final_text = result_text
             usage = getattr(msg, "usage", None) or {}
 
+    prose, structured = _split_answer((final_text or "").strip())
     return AgentResponse(
-        answer=(final_text or "").strip(),
+        answer=prose,
         chunks=chunks,
         tool_calls=captured["tool_calls"],
         figure=captured["figure"],
         usage=usage,
+        structured_answer=structured,
     )
 
 
