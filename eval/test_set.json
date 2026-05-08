@@ -1,45 +1,52 @@
 [
   {
-    "id": "AAPL-2023-lookup-01",
-    "filing_id": "AAPL_10K_2023",
-    "question": "What was Apple's total net sales in fiscal year 2023?",
+    "id": "AAPL-2025-lookup-01",
+    "filing_id": "AAPL-2025",
+    "question": "What was Apple's total net sales in fiscal year 2025?",
     "type": "lookup",
-    "answer": 383285,
+    "answer": 416161,
     "unit": "millions USD",
     "tolerance_pct": 0.0,
-    "source_hint": "Consolidated Statements of Operations"
+    "source_hint": "Consolidated Statements of Operations, Total net sales row, FY2025 column (year ended September 27, 2025)"
   },
   {
-    "id": "MSFT-2023-simple-01",
-    "filing_id": "MSFT_10K_2023",
-    "question": "What was Microsoft's year-over-year revenue growth rate from 2022 to 2023?",
+    "id": "AAPL-2025-simple-01",
+    "filing_id": "AAPL-2025",
+    "question": "What was Apple's year-over-year total net sales growth rate from fiscal year 2024 to fiscal year 2025?",
     "type": "simple_calc",
-    "answer": 6.88,
+    "answer": 6.43,
     "unit": "percent",
     "tolerance_pct": 1.0,
-    "source_hint": "Income Statements; FY2022 revenue $198,270M, FY2023 revenue $211,915M"
+    "source_hint": "Consolidated Statements of Operations: FY2024 total net sales $391,035M, FY2025 total net sales $416,161M; (416161-391035)/391035 = 6.43%"
   },
   {
-    "id": "AAPL-2023-complex-01",
-    "filing_id": "AAPL_10K_2023",
-    "question": "Which of Apple's reportable segments had the highest operating margin in 2023, and what was that margin?",
+    "id": "AAPL-2025-complex-01",
+    "filing_id": "AAPL-2025",
+    "question": "Compare Apple's Products gross margin percentage vs. Services gross margin percentage in fiscal year 2025. Which is higher and by how many percentage points?",
     "type": "complex_calc",
-    "answer": "Europe",
-    "tolerance_pct": null,
-    "source_hint": "Segment Information note"
+    "expected_values": {
+      "products_gross_margin_pct": 36.77,
+      "services_gross_margin_pct": 75.41,
+      "difference_pct_points": 38.64,
+      "higher": "Services"
+    },
+    "tolerance_pct": 1.0,
+    "source_hint": "Consolidated Statements of Operations FY2025: Products net sales $307,003M, Products cost of sales $194,116M -> margin 36.77%; Services net sales $109,158M, Services cost of sales $26,844M -> margin 75.41%; Services higher by ~38.6 pp"
   },
   {
-    "id": "AMZN-2023-viz-01",
-    "filing_id": "AMZN_10K_2023",
-    "question": "Compare Amazon's net sales and operating income between 2022 and 2023.",
+    "id": "AAPL-2025-viz-01",
+    "filing_id": "AAPL-2025",
+    "question": "Show Apple's net sales breakdown by Products and Services for fiscal years 2023, 2024, and 2025.",
     "type": "viz",
     "expected_values": {
-      "net_sales_2022": 513983,
-      "net_sales_2023": 574785,
-      "op_income_2022": 12248,
-      "op_income_2023": 36852
+      "products_2023": 298085,
+      "products_2024": 294866,
+      "products_2025": 307003,
+      "services_2023": 85200,
+      "services_2024": 96169,
+      "services_2025": 109158
     },
     "tolerance_pct": 0.5,
-    "source_hint": "Consolidated Statements of Operations"
+    "source_hint": "Consolidated Statements of Operations: Products and Services rows under Net sales for FY2023, FY2024, FY2025"
   }
 ]
