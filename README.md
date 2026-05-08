@@ -2,6 +2,8 @@
 
 A small RAG + tool-use app that answers quantitative questions about a single SEC 10-K filing. Upload one PDF, ask a question in natural language, get a cited answer — and, when the question needs arithmetic, the model writes and runs Python in a sandbox so the number is computed, not guessed.
 
+<img width="2510" height="1347" alt="image" src="https://github.com/user-attachments/assets/3ca16a70-aa74-4811-8324-3f611e7b3b72" />
+
 ## 1. User and workflow
 
 **User:** an equity-research analyst, finance student, or investor who needs to extract numbers and ratios from a specific 10-K.
