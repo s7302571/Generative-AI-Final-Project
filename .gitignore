@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+
+# Data + index — these are large and reproducible
+data/filings/*.pdf
+data/index/
+
+# Model cache (sentence-transformers downloads to HF cache)
+.cache/
+
+# Eval outputs
+eval/results/

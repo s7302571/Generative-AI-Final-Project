@@ -1,0 +1,45 @@
+[
+  {
+    "id": "AAPL-2023-lookup-01",
+    "filing_id": "AAPL_10K_2023",
+    "question": "What was Apple's total net sales in fiscal year 2023?",
+    "type": "lookup",
+    "answer": 383285,
+    "unit": "millions USD",
+    "tolerance_pct": 0.0,
+    "source_hint": "Consolidated Statements of Operations"
+  },
+  {
+    "id": "MSFT-2023-simple-01",
+    "filing_id": "MSFT_10K_2023",
+    "question": "What was Microsoft's year-over-year revenue growth rate from 2022 to 2023?",
+    "type": "simple_calc",
+    "answer": 6.88,
+    "unit": "percent",
+    "tolerance_pct": 1.0,
+    "source_hint": "Income Statements; FY2022 revenue $198,270M, FY2023 revenue $211,915M"
+  },
+  {
+    "id": "AAPL-2023-complex-01",
+    "filing_id": "AAPL_10K_2023",
+    "question": "Which of Apple's reportable segments had the highest operating margin in 2023, and what was that margin?",
+    "type": "complex_calc",
+    "answer": "Europe",
+    "tolerance_pct": null,
+    "source_hint": "Segment Information note"
+  },
+  {
+    "id": "AMZN-2023-viz-01",
+    "filing_id": "AMZN_10K_2023",
+    "question": "Compare Amazon's net sales and operating income between 2022 and 2023.",
+    "type": "viz",
+    "expected_values": {
+      "net_sales_2022": 513983,
+      "net_sales_2023": 574785,
+      "op_income_2022": 12248,
+      "op_income_2023": 36852
+    },
+    "tolerance_pct": 0.5,
+    "source_hint": "Consolidated Statements of Operations"
+  }
+]
