@@ -31,65 +31,99 @@ from src.vectorstore import VectorStore
 st.set_page_config(page_title="AskEdgar", layout="wide")
 
 
-# ChatGPT / VS-Code-Chat style: bordered message area + prominent input below.
+# Sidebar-as-chat styling: widen the sidebar and tighten chat bubbles inside it.
 CHAT_CSS = """
 <style>
+/* === Wider sidebar so chat has room === */
+[data-testid="stSidebar"] {
+    min-width: 420px !important;
+    max-width: 520px !important;
+}
+
 /* === Message bubbles === */
 [data-testid="stChatMessage"] {
     background: transparent !important;
     border: none !important;
-    padding: 6px 0 !important;
-    margin-bottom: 6px !important;
+    padding: 4px 0 !important;
+    margin-bottom: 4px !important;
     box-shadow: none !important;
 }
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
     flex-direction: row-reverse;
     margin-left: auto;
-    max-width: 85%;
+    max-width: 90%;
     background: #ffffff !important;
     border: 1px solid #e3e3e6 !important;
-    border-radius: 18px !important;
-    padding: 10px 14px !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
 }
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) > div:last-child {
     text-align: left;
 }
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) {
     max-width: 100%;
-    padding: 6px 0 !important;
+    padding: 4px 0 !important;
 }
 [data-testid="stChatMessageAvatarUser"],
 [data-testid="stChatMessageAvatarAssistant"] {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    font-size: 14px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    font-size: 13px !important;
 }
 [data-testid="stChatMessage"] p {
     margin-bottom: 0;
-    line-height: 1.55;
+    line-height: 1.5;
 }
 
-/* === Right "chat sidebar" — mirrors the left native sidebar === */
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
-    background: #f0f2f6 !important;
-    border-left: 1px solid #d6d8de !important;
-    padding: 1.5rem 1.25rem !important;
-    border-radius: 0 !important;
-    min-height: calc(100vh - 6rem);
-}
-
-/* === Chat input box: visibly separated from the messages panel === */
-[data-testid="stChatInput"] {
+/* === Chat input in the sidebar === */
+[data-testid="stSidebar"] [data-testid="stChatInput"] {
     border: 1.5px solid #e0e0e0 !important;
     border-radius: 14px !important;
     background: #ffffff !important;
-    margin-top: 12px !important;
+    margin-top: 8px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
-[data-testid="stChatInput"]:focus-within {
-    border-color: #7c6cff !important;
-    box-shadow: 0 0 0 3px rgba(124, 108, 255, 0.12) !important;
+[data-testid="stSidebar"] [data-testid="stChatInput"]:focus-within {
+    border-color: #e0e0e0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+/* Also strip the inner textarea's focus outline/border. */
+[data-testid="stSidebar"] [data-testid="stChatInput"] textarea:focus,
+[data-testid="stSidebar"] [data-testid="stChatInput"] textarea:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Lock the sidebar to the viewport — no outer scrolling. The chat history
+   inside flex-grows and scrolls internally; the input sits at the bottom. */
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    height: calc(100vh - 3.5rem) !important;
+    max-height: calc(100vh - 3.5rem) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] > div:first-child,
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] [data-testid="stVerticalBlock"] {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+/* Chat history fills remaining vertical space and scrolls internally */
+[data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {
+    height: auto !important;
+    flex: 1 1 auto !important;
+    min-height: 200px !important;
+    overflow: auto !important;
+}
+/* Belt-and-suspenders: also pin the chat input to the bottom */
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="element-container"]:has([data-testid="stChatInput"]),
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div:has(> [data-testid="stChatInput"]) {
+    margin-top: auto !important;
+    flex: 0 0 auto !important;
 }
 </style>
 """
@@ -124,8 +158,11 @@ def _build_store(uploaded_file) -> VectorStore:
 
 
 def main():
-    st.title("AskEdgar — AI Analyst for SEC Filings")
     st.markdown(CHAT_CSS, unsafe_allow_html=True)
+    st.markdown(
+        "<h1 style='text-align: center;'>AskEdgar — AI Analyst for SEC Filings</h1>",
+        unsafe_allow_html=True,
+    )
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -163,38 +200,27 @@ def main():
 
         if st.session_state.store is not None:
             st.success(f"Loaded: **{st.session_state.store.name}**\n\n{len(st.session_state.store)} chunks indexed")
-            if st.button("Remove document", use_container_width=True):
+            btn_remove, btn_clear = st.columns([1, 1])
+            if btn_remove.button("Remove document", use_container_width=True):
                 st.session_state.store = None
                 st.session_state.store_hash = None
                 st.session_state.last_figure = None
                 st.rerun()
+            if btn_clear.button("Clear chat", use_container_width=True):
+                st.session_state.messages = []
+                st.session_state.last_figure = None
+                st.rerun()
         else:
             st.caption("No document loaded — chat is in general mode.")
+            if st.button("Clear chat", use_container_width=True):
+                st.session_state.messages = []
+                st.session_state.last_figure = None
+                st.rerun()
 
         st.divider()
-        st.caption(f"Model: `{config.MODEL}`")
-        if st.button("Clear chat", use_container_width=True):
-            st.session_state.messages = []
-            st.session_state.last_figure = None
-            st.rerun()
 
-    viz_col, chat_col = st.columns([2, 3], gap="large")
-
-    with viz_col:
-        st.subheader("Visualization")
-        fig = st.session_state.last_figure
-        if fig is None:
-            st.caption("Charts produced by the model will appear here.")
-        else:
-            mod = type(fig).__module__
-            if mod.startswith("plotly"):
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.pyplot(fig)
-
-    with chat_col:
-        # Messages: scrollable area inside the right panel
-        history = st.container(height=600, border=False)
+        # Chat history scrolls inside the sidebar; CSS sizes it to fill remaining space
+        history = st.container(height=420, border=False)
         with history:
             if not st.session_state.messages:
                 st.markdown(EMPTY_STATE_HTML, unsafe_allow_html=True)
@@ -216,39 +242,52 @@ def main():
                                 if tc["error"]:
                                     st.error(tc["error"])
 
-        # Input: visually separated below the messages panel
-        prompt = st.chat_input("Ask anything — upload a PDF on the left to ground the answer")
-        if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with history:
-                with st.chat_message("user", avatar="🧑"):
-                    st.markdown(prompt)
-                with st.chat_message("assistant", avatar="🤖"):
-                    with st.spinner("Thinking..."):
-                        resp = ask(
-                            prompt,
-                            store=st.session_state.store,
-                            enable_tool=st.session_state.store is not None,
-                        )
-                    st.markdown(resp.answer)
-            st.session_state.messages.append(
-                {
-                    "role": "assistant",
-                    "content": resp.answer,
-                    "chunks": resp.chunks,
-                    "tool_calls": [
-                        {
-                            "code": tc.code,
-                            "stdout": tc.result.stdout,
-                            "error": tc.result.error,
-                        }
-                        for tc in resp.tool_calls
-                    ],
-                }
-            )
-            if resp.figure is not None:
-                st.session_state.last_figure = resp.figure
-            st.rerun()
+        prompt = st.chat_input("Ask anything — upload a PDF above to ground the answer")
+
+    # Main area: visualization only
+    st.markdown(
+        "<h3 style='text-align: center;'>Visualization</h3>",
+        unsafe_allow_html=True,
+    )
+    fig = st.session_state.last_figure
+    if fig is not None:
+        mod = type(fig).__module__
+        if mod.startswith("plotly"):
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.pyplot(fig)
+
+    if prompt:
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with history:
+            with st.chat_message("user", avatar="🧑"):
+                st.markdown(prompt)
+            with st.chat_message("assistant", avatar="🤖"):
+                with st.spinner("Thinking..."):
+                    resp = ask(
+                        prompt,
+                        store=st.session_state.store,
+                        enable_tool=st.session_state.store is not None,
+                    )
+                st.markdown(resp.answer)
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": resp.answer,
+                "chunks": resp.chunks,
+                "tool_calls": [
+                    {
+                        "code": tc.code,
+                        "stdout": tc.result.stdout,
+                        "error": tc.result.error,
+                    }
+                    for tc in resp.tool_calls
+                ],
+            }
+        )
+        if resp.figure is not None:
+            st.session_state.last_figure = resp.figure
+        st.rerun()
 
 
 if __name__ == "__main__":
