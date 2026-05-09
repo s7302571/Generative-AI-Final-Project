@@ -99,6 +99,11 @@ The latest run (`eval/results/report.md`) is the Haiku run; the Opus run is summ
 - For anything forward-looking ("guidance", "risk factors"), treat the answer as a starting point, not a conclusion.
 - For investment decisions, the system is a research assistant, not an analyst of record.
 
+## Artifact snapshot
+<img width="526" height="290" alt="image" src="https://github.com/user-attachments/assets/944c570a-d79c-4d12-b43d-2c710cc4193d" />
+
+<img width="526" height="272" alt="image" src="https://github.com/user-attachments/assets/63fc0186-19f9-4116-8bae-3a85fcb6ae7a" />
+
 ## 4. Setup
 
 Project is managed with [uv](https://docs.astral.sh/uv/). The agent loop runs through the [Claude Agent SDK](https://pypi.org/project/claude-agent-sdk/), which shells out to the local `claude` CLI — install Claude Code first if you don't have it.
