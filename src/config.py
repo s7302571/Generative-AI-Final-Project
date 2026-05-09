@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parent.parent
 # app uploads files directly and never touches this directory.
 FILINGS_DIR = ROOT / "data" / "filings"
 
-# Default to Opus 4.7. Override via ASKEDGAR_MODEL if you want to trade
-# intelligence for cost (claude-sonnet-4-6) or speed (claude-haiku-4-5).
-MODEL = os.getenv("ASKEDGAR_MODEL", "claude-opus-4-7")
+# Default to Haiku 4.5. Override via ASKEDGAR_MODEL if you want more
+# intelligence (claude-sonnet-4-6, claude-opus-4-7) at higher cost.
+MODEL = os.getenv("ASKEDGAR_MODEL", "claude-haiku-4-5")
 
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 20

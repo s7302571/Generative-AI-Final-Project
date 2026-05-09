@@ -2,35 +2,37 @@
   {
     "id": "AAPL-2025-simple-01",
     "type": "simple_calc",
-    "latency_s": 8.13,
-    "input_tokens": 6,
-    "output_tokens": 188,
+    "latency_s": 11.21,
+    "input_tokens": 18,
+    "output_tokens": 862,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 6.42,
+      "value": 6.43,
       "unit": "percent",
-      "fy2024_net_sales": 391035,
-      "fy2025_net_sales": 416161,
-      "absolute_change": 25126
+      "fy2024_total_net_sales": 391035,
+      "fy2025_total_net_sales": 416161,
+      "absolute_change": 25126,
+      "unit_millions_usd": "millions_USD"
     },
     "ground_truth": 6.43,
     "correct": true,
-    "reason": "within 1.0% (got 6.42, expected 6.43)"
+    "reason": "within 1.0% (got 6.43, expected 6.43)"
   },
   {
     "id": "AAPL-2025-simple-02",
     "type": "simple_calc",
-    "latency_s": 6.86,
-    "input_tokens": 6,
-    "output_tokens": 188,
+    "latency_s": 9.34,
+    "input_tokens": 18,
+    "output_tokens": 630,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 31.97,
       "unit": "percent",
       "operating_income": 133050,
-      "total_net_sales": 416161
+      "total_net_sales": 416161,
+      "unit_currency": "millions_USD"
     },
     "ground_truth": 31.97,
     "correct": true,
@@ -39,17 +41,16 @@
   {
     "id": "AAPL-2025-simple-03",
     "type": "simple_calc",
-    "latency_s": 9.04,
-    "input_tokens": 6,
-    "output_tokens": 264,
+    "latency_s": 12.17,
+    "input_tokens": 18,
+    "output_tokens": 838,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 19.5,
       "unit": "percent",
-      "net_income_fy2024": 93736,
-      "net_income_fy2025": 112010,
-      "absolute_change": 18274
+      "fy2024_net_income_millions": 93736,
+      "fy2025_net_income_millions": 112010
     },
     "ground_truth": 19.5,
     "correct": true,
@@ -58,16 +59,16 @@
   {
     "id": "AAPL-2025-simple-04",
     "type": "simple_calc",
-    "latency_s": 9.74,
-    "input_tokens": 6,
-    "output_tokens": 182,
+    "latency_s": 13.54,
+    "input_tokens": 18,
+    "output_tokens": 691,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 26.91,
       "unit": "percent",
-      "net_income": 112010,
-      "total_net_sales": 416161
+      "net_income_millions": 112010,
+      "total_net_sales_millions": 416161
     },
     "ground_truth": 26.91,
     "correct": true,
@@ -76,28 +77,27 @@
   {
     "id": "AAPL-2025-simple-05",
     "type": "simple_calc",
-    "latency_s": 10.52,
-    "input_tokens": 6,
-    "output_tokens": 327,
+    "latency_s": 11.67,
+    "input_tokens": 10,
+    "output_tokens": 925,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 15.61,
+      "value": 15.6,
       "unit": "percent",
-      "provision_for_income_taxes": 20719,
-      "income_before_provision_for_income_taxes": 132729,
-      "disclosed_effective_tax_rate": 15.6
+      "provision_for_income_taxes_millions": 20719,
+      "income_before_provision_millions": 132729
     },
     "ground_truth": 15.61,
     "correct": true,
-    "reason": "within 1.0% (got 15.61, expected 15.61)"
+    "reason": "within 1.0% (got 15.6, expected 15.61)"
   },
   {
     "id": "AAPL-2025-complex-01",
     "type": "complex_calc",
-    "latency_s": 7.39,
-    "input_tokens": 6,
-    "output_tokens": 272,
+    "latency_s": 8.18,
+    "input_tokens": 10,
+    "output_tokens": 564,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
@@ -119,35 +119,35 @@
   {
     "id": "AAPL-2025-complex-02",
     "type": "complex_calc",
-    "latency_s": 10.58,
-    "input_tokens": 6,
-    "output_tokens": 237,
+    "latency_s": 9.58,
+    "input_tokens": 18,
+    "output_tokens": 694,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 4.23,
+      "value": 4.2,
       "unit": "percent",
-      "fy2023_net_sales": 383285,
-      "fy2025_net_sales": 416161,
-      "years": 2
+      "fy2023_total_net_sales": 383285,
+      "fy2025_total_net_sales": 416161,
+      "period_years": 2
     },
     "ground_truth": 4.2,
     "correct": true,
-    "reason": "within 2.0% (got 4.23, expected 4.2)"
+    "reason": "within 2.0% (got 4.2, expected 4.2)"
   },
   {
     "id": "AAPL-2025-complex-03",
     "type": "complex_calc",
-    "latency_s": 8.82,
-    "input_tokens": 6,
-    "output_tokens": 285,
+    "latency_s": 10.18,
+    "input_tokens": 18,
+    "output_tokens": 763,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 98767,
       "unit": "millions_USD",
-      "cash_from_operations_2025": 111482,
-      "capex_2025": 12715
+      "operating_cash_flow": 111482,
+      "capital_expenditures": 12715
     },
     "ground_truth": 98767,
     "correct": true,
@@ -156,18 +156,18 @@
   {
     "id": "AAPL-2025-complex-04",
     "type": "complex_calc",
-    "latency_s": 10.06,
-    "input_tokens": 6,
-    "output_tokens": 399,
+    "latency_s": 14.33,
+    "input_tokens": 18,
+    "output_tokens": 1158,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": "Services",
-      "services_change": 12989,
       "iphone_change": 8403,
       "mac_change": 3724,
       "ipad_change": 1329,
       "wearables_change": -1319,
+      "services_change": 12989,
       "unit": "millions_USD"
     },
     "ground_truth": {
@@ -184,17 +184,18 @@
   {
     "id": "AAPL-2025-complex-05",
     "type": "complex_calc",
-    "latency_s": 9.99,
-    "input_tokens": 6,
-    "output_tokens": 265,
+    "latency_s": 9.1,
+    "input_tokens": 18,
+    "output_tokens": 801,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 7.46,
       "unit": "percent",
-      "net_income_fy2023": 96995,
-      "net_income_fy2025": 112010,
-      "years": 2
+      "fy2023_net_income": 96995,
+      "fy2025_net_income": 112010,
+      "period_years": 2,
+      "unit_currency": "millions_USD"
     },
     "ground_truth": 7.46,
     "correct": true,
@@ -203,20 +204,16 @@
   {
     "id": "AAPL-2025-complex-06",
     "type": "complex_calc",
-    "latency_s": 11.75,
-    "input_tokens": 6,
-    "output_tokens": 341,
+    "latency_s": 6.87,
+    "input_tokens": 10,
+    "output_tokens": 371,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": -17674,
       "unit": "millions_USD",
-      "total_current_assets_2025": 147957,
-      "total_current_liabilities_2025": 165631,
-      "working_capital_2025": -17674,
-      "total_current_assets_2024": 152987,
-      "total_current_liabilities_2024": 176392,
-      "working_capital_2024": -23405
+      "current_assets": 147957,
+      "current_liabilities": 165631
     },
     "ground_truth": -17674,
     "correct": true,
@@ -225,20 +222,20 @@
   {
     "id": "AAPL-2025-complex-10",
     "type": "complex_calc",
-    "latency_s": 14.72,
-    "input_tokens": 6,
-    "output_tokens": 960,
+    "latency_s": 12.02,
+    "input_tokens": 18,
+    "output_tokens": 1300,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 11.7,
-      "products_cagr_pct": 1.49,
+      "value": 11.705,
+      "products_cagr_pct": 1.485,
       "services_cagr_pct": 13.19,
-      "products_2023": 298085,
-      "products_2025": 307003,
-      "services_2023": 85200,
-      "services_2025": 109158,
-      "unit": "percent"
+      "unit": "percent",
+      "products_fy2023_millions": 298085,
+      "products_fy2025_millions": 307003,
+      "services_fy2023_millions": 85200,
+      "services_fy2025_millions": 109158
     },
     "ground_truth": {
       "products_cagr_pct": 1.48,
@@ -251,31 +248,19 @@
   {
     "id": "AAPL-2025-complex-11",
     "type": "complex_calc",
-    "latency_s": 33.82,
-    "input_tokens": 6,
-    "output_tokens": 2980,
+    "latency_s": 16.23,
+    "input_tokens": 18,
+    "output_tokens": 2136,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 0.2901,
-      "unit": "ratio",
-      "americas_share_pct": 42.86,
-      "europe_share_pct": 26.68,
-      "greater_china_share_pct": 15.47,
-      "japan_share_pct": 6.9,
-      "rest_of_asia_pacific_share_pct": 8.1,
-      "americas_net_sales": 178353,
-      "europe_net_sales": 111032,
-      "greater_china_net_sales": 64377,
-      "japan_net_sales": 28703,
-      "rest_of_asia_pacific_net_sales": 33696,
-      "total_net_sales": 416161,
-      "americas_share_sq": 0.18367,
-      "europe_share_sq": 0.07118,
-      "greater_china_share_sq": 0.02393,
-      "japan_share_sq": 0.00476,
-      "rest_of_asia_pacific_share_sq": 0.00656,
-      "hhi": 0.2901
+      "value": 0.290095,
+      "americas_share_pct": 0.4286,
+      "europe_share_pct": 0.2668,
+      "greater_china_share_pct": 0.1547,
+      "japan_share_pct": 0.069,
+      "rest_of_asia_pacific_share_pct": 0.081,
+      "unit": "herfindahl_index"
     },
     "ground_truth": {
       "americas_share_pct": 42.86,
@@ -285,28 +270,24 @@
       "rest_of_asia_pacific_share_pct": 8.1,
       "value": 0.2901
     },
-    "correct": true,
-    "reason": "all 6 fields ok"
+    "correct": false,
+    "reason": "americas_share_pct: got 0.4286, expected 42.86 (diff 99.00%); europe_share_pct: got 0.2668, expected 26.68 (diff 99.00%); greater_china_share_pct: got 0.1547, expected 15.47 (diff 99.00%); japan_share_pct: got 0.069, expected 6.9 (diff 99.00%); rest_of_asia_pacific_share_pct: got 0.081, expected 8.1 (diff 99.00%)"
   },
   {
     "id": "AAPL-2025-complex-12",
     "type": "complex_calc",
-    "latency_s": 23.96,
-    "input_tokens": 7,
-    "output_tokens": 1486,
+    "latency_s": 10.94,
+    "input_tokens": 18,
+    "output_tokens": 1065,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 9378.25,
-      "unit": "millions_USD",
       "operating_income_2023": 114301,
       "operating_income_2024": 123216,
       "operating_income_2025": 133050,
       "mean_operating_income": 123522.33,
-      "sum_operating_income": 370567,
-      "sample_size": 3,
-      "degrees_of_freedom": 2,
-      "sample_variance": 87951631.81
+      "value": 9378.25,
+      "unit": "millions_USD"
     },
     "ground_truth": {
       "operating_income_2023": 114301,
@@ -321,25 +302,19 @@
   {
     "id": "AAPL-2025-complex-13",
     "type": "complex_calc",
-    "latency_s": 32.1,
-    "input_tokens": 7,
-    "output_tokens": 2537,
+    "latency_s": 19.71,
+    "input_tokens": 26,
+    "output_tokens": 2623,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 0.3409,
       "iphone_share_pct": 50.3618,
       "mac_share_pct": 8.0997,
       "ipad_share_pct": 6.7337,
       "wearables_home_accessories_share_pct": 8.575,
       "services_share_pct": 26.2298,
-      "iphone_net_sales": 209586,
-      "mac_net_sales": 33708,
-      "ipad_net_sales": 28023,
-      "wearables_home_accessories_net_sales": 35686,
-      "services_net_sales": 109158,
-      "total_net_sales": 416161,
-      "unit": "ratio"
+      "value": 0.340879,
+      "unit": "herfindahl_hirschman_index"
     },
     "ground_truth": {
       "iphone_share_pct": 50.36,
@@ -355,18 +330,16 @@
   {
     "id": "AAPL-2025-simple-06",
     "type": "simple_calc",
-    "latency_s": 8.67,
-    "input_tokens": 6,
-    "output_tokens": 270,
+    "latency_s": 9.9,
+    "input_tokens": 18,
+    "output_tokens": 700,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 79.48,
       "unit": "percent",
-      "total_liabilities": 285508,
-      "total_assets": 359241,
-      "total_liabilities_unit": "millions_USD",
-      "total_assets_unit": "millions_USD"
+      "total_liabilities_millions_usd": 285508,
+      "total_assets_millions_usd": 359241
     },
     "ground_truth": 79.48,
     "correct": true,
@@ -375,29 +348,28 @@
   {
     "id": "AAPL-2025-simple-07",
     "type": "simple_calc",
-    "latency_s": 11.04,
-    "input_tokens": 6,
-    "output_tokens": 379,
+    "latency_s": 8.71,
+    "input_tokens": 10,
+    "output_tokens": 642,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 13.51,
+      "value": 14.0,
       "unit": "percent",
-      "services_fy2024": 96169,
-      "services_fy2025": 109158,
-      "absolute_change": 12989,
-      "filing_rounded_change_pct": 14
+      "fy2025_services_net_sales": 109158,
+      "fy2024_services_net_sales": 96169,
+      "unit_for_sales": "millions_USD"
     },
     "ground_truth": 13.51,
-    "correct": true,
-    "reason": "within 1.0% (got 13.51, expected 13.51)"
+    "correct": false,
+    "reason": "got 14.0, expected 13.51 (diff 3.63%)"
   },
   {
     "id": "AAPL-2025-complex-07",
     "type": "complex_calc",
-    "latency_s": 10.8,
-    "input_tokens": 6,
-    "output_tokens": 608,
+    "latency_s": 16.21,
+    "input_tokens": 18,
+    "output_tokens": 1975,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
@@ -407,17 +379,7 @@
       "greater_china_growth_pct": -3.85,
       "japan_growth_pct": 14.57,
       "rest_of_asia_pacific_growth_pct": 9.91,
-      "unit": "percent",
-      "americas_2024": 167045,
-      "americas_2025": 178353,
-      "europe_2024": 101328,
-      "europe_2025": 111032,
-      "greater_china_2024": 66952,
-      "greater_china_2025": 64377,
-      "japan_2024": 25052,
-      "japan_2025": 28703,
-      "rest_of_asia_pacific_2024": 30658,
-      "rest_of_asia_pacific_2025": 33696
+      "unit": "percent"
     },
     "ground_truth": {
       "value": "Japan",
@@ -433,9 +395,9 @@
   {
     "id": "AAPL-2025-complex-08",
     "type": "complex_calc",
-    "latency_s": 11.06,
-    "input_tokens": 6,
-    "output_tokens": 549,
+    "latency_s": 11.34,
+    "input_tokens": 18,
+    "output_tokens": 1060,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
@@ -443,10 +405,6 @@
       "fy2023_services_share_pct": 22.23,
       "fy2025_services_share_pct": 26.23,
       "change_pct_points": 4.0,
-      "fy2023_services_net_sales": 85200,
-      "fy2025_services_net_sales": 109158,
-      "fy2023_total_net_sales": 383285,
-      "fy2025_total_net_sales": 416161,
       "unit": "percent"
     },
     "ground_truth": {
@@ -461,9 +419,9 @@
   {
     "id": "AAPL-2025-complex-09",
     "type": "complex_calc",
-    "latency_s": 16.51,
-    "input_tokens": 7,
-    "output_tokens": 825,
+    "latency_s": 16.33,
+    "input_tokens": 18,
+    "output_tokens": 1712,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
@@ -471,10 +429,6 @@
       "fy2023_rd_intensity_pct": 7.8,
       "fy2025_rd_intensity_pct": 8.3,
       "change_pct_points": 0.5,
-      "fy2023_rd_expense_millions_usd": 29915,
-      "fy2025_rd_expense_millions_usd": 34550,
-      "fy2023_net_sales_millions_usd": 383285,
-      "fy2025_net_sales_millions_usd": 416161,
       "unit": "percent"
     },
     "ground_truth": {
@@ -489,17 +443,16 @@
   {
     "id": "AAPL-2025-complex-14",
     "type": "complex_calc",
-    "latency_s": 8.56,
-    "input_tokens": 6,
-    "output_tokens": 368,
+    "latency_s": 11.95,
+    "input_tokens": 18,
+    "output_tokens": 954,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 10.32,
-      "unit": "percent",
       "fy2023_diluted_eps": 6.13,
       "fy2025_diluted_eps": 7.46,
-      "years": 2
+      "value": 10.32,
+      "unit": "percent"
     },
     "ground_truth": {
       "fy2023_diluted_eps": 6.13,
@@ -512,21 +465,21 @@
   {
     "id": "AAPL-2025-complex-15",
     "type": "complex_calc",
-    "latency_s": 19.89,
-    "input_tokens": 7,
-    "output_tokens": 1349,
+    "latency_s": 14.43,
+    "input_tokens": 18,
+    "output_tokens": 1353,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
       "value": 151.91,
       "unit": "percent",
-      "net_income_margin_pct": 26.92,
-      "asset_turnover": 1.1584,
-      "equity_multiplier": 4.8722,
-      "net_income_millions_usd": 112010,
-      "total_net_sales_millions_usd": 416161,
-      "total_assets_millions_usd": 359241,
-      "total_shareholders_equity_millions_usd": 73733
+      "net_income_margin_pct": 26.9151,
+      "asset_turnover": 1.15845,
+      "equity_multiplier": 4.87219,
+      "net_income_millions": 112010,
+      "total_net_sales_millions": 416161,
+      "total_assets_millions": 359241,
+      "total_shareholders_equity_millions": 73733
     },
     "ground_truth": {
       "net_income_margin_pct": 26.92,
@@ -540,24 +493,18 @@
   {
     "id": "AAPL-2025-complex-16",
     "type": "complex_calc",
-    "latency_s": 17.5,
-    "input_tokens": 6,
-    "output_tokens": 1346,
+    "latency_s": 20.71,
+    "input_tokens": 18,
+    "output_tokens": 1440,
     "tool_calls": 0,
     "had_figure": false,
     "structured_answer": {
-      "value": 0.2492,
-      "unit": "percentage_points",
       "fy2023_rd_intensity_pct": 7.8049,
       "fy2024_rd_intensity_pct": 8.0223,
       "fy2025_rd_intensity_pct": 8.3021,
       "mean_rd_intensity_pct": 8.0431,
-      "fy2023_rd_expense_millions_usd": 29915,
-      "fy2024_rd_expense_millions_usd": 31370,
-      "fy2025_rd_expense_millions_usd": 34550,
-      "fy2023_total_net_sales_millions_usd": 383285,
-      "fy2024_total_net_sales_millions_usd": 391035,
-      "fy2025_total_net_sales_millions_usd": 416161
+      "value": 0.2492,
+      "unit": "percentage_points"
     },
     "ground_truth": {
       "fy2023_rd_intensity_pct": 7.8,

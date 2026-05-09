@@ -78,7 +78,7 @@ uv sync
 cp .env.example .env  # then edit .env to add ANTHROPIC_API_KEY
 ```
 
-`.env` must contain `ANTHROPIC_API_KEY=sk-ant-...`. Optional: `ASKEDGAR_MODEL=claude-sonnet-4-6` to swap the default `claude-opus-4-7`.
+`.env` must contain `ANTHROPIC_API_KEY=sk-ant-...`. Optional: `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` to swap the default `claude-haiku-4-5`.
 
 ## 7. Run the app
 
@@ -139,7 +139,7 @@ data/filings/            PDFs the eval harness loads (gitignored)
 ## 10. Notes
 
 - **Sandbox**: `src/tools.py` uses a SIGALRM-based timeout; macOS/Linux only.
-- **Model**: defaults to `claude-opus-4-7`. Set `ASKEDGAR_MODEL=claude-sonnet-4-6` in `.env` to trade intelligence for cost.
+- **Model**: defaults to `claude-haiku-4-5`. Set `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` in `.env` to trade cost for intelligence.
 - **Embeddings**: `sentence-transformers/all-MiniLM-L6-v2` (free, local). The first run downloads ~80MB to the HF cache.
 - **Vector store**: FAISS `IndexFlatIP` over L2-normalized embeddings (cosine similarity). Lives in `st.session_state` only — uploads are not persisted across app restarts.
 - **No secrets in repo**: `.env` is gitignored; `.env.example` shows the required key without a value.
