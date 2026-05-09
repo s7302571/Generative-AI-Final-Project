@@ -4,59 +4,93 @@ A small RAG + tool-use app that answers quantitative questions about a single SE
 
 <img width="2510" height="1347" alt="image" src="https://github.com/user-attachments/assets/3ca16a70-aa74-4811-8324-3f611e7b3b72" />
 
-## 1. User and workflow
+## 1. Context, user, and problem
 
-**User:** an equity-research analyst, finance student, or investor who needs to extract numbers and ratios from a specific 10-K.
+**User.** An equity-research analyst, finance student, or individual investor — someone who reads one 10-K at a time to answer a specific quantitative question (a margin, a growth rate, a ratio) with a citation they can defend in a model or report.
 
-**Workflow it replaces:** open the PDF, Ctrl-F for the line item, copy figures into a spreadsheet, compute the ratio, write a short answer with citations.
+**Workflow it replaces.** Today the same task is a 5–10 minute manual loop: open the 100+ page PDF, Ctrl-F the line item, copy figures into Excel, compute the ratio by hand, write a short cited answer.
 
-**Scope:** one filing at a time, one quantitative question at a time. The app does not browse the web, does not compare across filings, does not give investment advice.
+**Why it matters.** 10-Ks are long, dense, and inconsistently formatted (prose mixed with tables that PDF extractors mangle). Each lookup is slow and error-prone, and the mistakes propagate downstream into valuation models and reports. The goal is to turn a 10-minute manual lookup into a single natural-language question with a cited, computed answer.
 
-## 2. What I built
+**Scope.** One filing at a time, one quantitative question at a time. The app does not browse the web, does not compare across filings, does not give investment advice.
 
-A Streamlit app (`app.py`) plus a callable agent (`src/agent.py`) usable by the eval harness or any Python caller.
+## 2. Solution and design
 
-- PDF → text chunks (`src/ingest.py`) with section/page metadata.
-- FAISS index over MiniLM embeddings, built in-memory per upload (`src/vectorstore.py`).
-- Single LLM call via the Claude Agent SDK that retrieves top-K passages, then optionally calls a sandboxed `run_python` MCP tool (`src/tools.py`) for arithmetic or charts.
-- Structured `<answer_json>` block in the model output so a programmatic grader can read the answer without parsing prose.
+A Streamlit app (`app.py`) plus a callable agent (`src/agent.py`) usable by the eval harness or any Python caller. The pipeline is six stages, end to end:
 
-That's the whole system: retrieval + one tool. No multi-agent loop, no cross-document RAG, no fine-tuning.
+```
+PDF upload → ingest → hybrid retrieval → LLM call → (optional) run_python → answer
+```
 
-## 3. Why GenAI is useful here
+- **PDF → text chunks** with section/page metadata (`src/ingest.py`, pdfplumber).
+- **Hybrid retrieval** built in-memory per upload (`src/vectorstore.py`): dense MiniLM embeddings (FAISS `IndexFlatIP` over L2-normalized vectors) **+** BM25 sparse, fused with **Reciprocal Rank Fusion**. Catches both paraphrased prose ("net sales rose 6%") and exact line items in tables — neither retriever alone is enough on noisy 10-K text.
+- **Single LLM call** via the Claude Agent SDK with a "use ONLY these passages" prompt (`src/prompts.py`).
+- **Optional `run_python` tool** in an MCP sandbox (`src/tools.py`) that the model invokes for arithmetic or charts — the number is computed, not guessed.
+- **Structured `<answer_json>` block** in every response so a programmatic grader (or any downstream caller) can read the answer mechanically — no LLM-as-judge, no brittle regex.
 
-10-Ks are long (100+ pages), heavily tabular, and inconsistently formatted. Three things the model does that a baseline doesn't:
+That's the whole system: retrieval + one optional tool. No multi-agent loop, no cross-document RAG, no fine-tuning. The design choices that matter:
 
-1. **Locates the right number** in prose like "Total net sales increased 6% during 2025 ..." or in tables that pdfplumber turns into noisy text.
+1. **Hybrid retrieval** — RRF avoids having to calibrate score scales across the two retrievers.
+2. **Tool use, not mental math** — when the question needs CAGR, ratios, or a chart, the model writes Python and runs it in a sandbox.
+3. **Structured output contract** — `<answer_json>` makes evaluation mechanical and reuse trivial.
+4. **One agent, one call** — complexity has to earn its keep; this version does the job.
+
+### Why GenAI is the right tool
+
+Three things the model does that a non-LLM baseline doesn't:
+
+1. **Locates the right number** in prose ("Total net sales increased 6% during 2025 …") or in tables that pdfplumber turns into noisy text.
 2. **Interprets the question** — "operating margin" maps to operating income / total net sales without the user having to spell out the formula.
-3. **Computes exactly** via the Python tool when arithmetic is non-trivial (CAGR, HHI, sample SD, DuPont decomposition).
+3. **Computes exactly** via the Python tool on multi-step math (CAGR, HHI, sample SD, DuPont decomposition).
 
 A keyword-search baseline can do (1) on simple lookups but fails on (2) and (3). A pure-prompt baseline does (1) and (2) but is unreliable on (3) for multi-step math.
 
-## 4. Baseline comparison
+## 3. Evaluation and results
 
-The eval harness runs the **full system** (RAG + `run_python`) against a **RAG-only baseline** (same retrieval, same prompt, tool disabled). Both use the same model so the only variable is the tool.
+**What we tested.** 23 questions on Apple's FY2025 10-K (`eval/test_set.json`) — 7 simple lookups and 16 multi-step calculations (CAGR, HHI, working capital, DuPont ROE, sample SD).
 
-Test set: 23 questions on Apple's FY2025 10-K (`eval/test_set.json`) — 7 simple ratios/growth rates and 16 multi-step calculations (CAGR, HHI, working capital, DuPont ROE, sample SD).
+**What we compared against.** The full system (RAG + `run_python`) vs. a **RAG-only baseline** with the same retrieval and same prompt but with the tool disabled. Only variable: the tool. Run on **two models** — Opus 4.7 and Haiku 4.5 — to test whether the tool's value depends on model strength.
 
-Grading: numeric answers are matched against ground truth within a per-question tolerance (`eval/grader.py`). The model emits a structured `<answer_json>` block so grading is mechanical, not LLM-judged.
+**How we graded.** Numeric answers are matched against ground truth within a per-question tolerance (`eval/grader.py`), reading the structured `<answer_json>` block from each response. Grading is mechanical, not LLM-judged.
 
-Latest run (`eval/results/report.md`):
+### Two runs, one story
 
-| System | Accuracy | Avg latency | Output tokens | Cost | Tool calls |
-|---|---|---|---|---|---|
-| **full** (RAG + Python) | 23/23 (100%) | 15.75s | 18,477 | $1.39 | 9 |
-| **rag_only** (baseline) | 23/23 (100%) | 13.54s | 16,605 | $1.25 | 0 |
+**Opus 4.7 — tool: redundant**
 
-## 5. What worked, what failed, where a human stays in
+| System | Accuracy | Avg latency | Cost | Tool calls |
+|---|---|---|---|---|
+| **full** (RAG + Python) | 23/23 (100%) | 15.75 s | $1.39 | 9 |
+| **rag_only** (baseline) | 23/23 (100%) | 13.54 s | $1.25 | 0 |
+
+Δ = 0 accuracy gain · +16% latency · +11% cost — Opus did the arithmetic in its head.
+
+**Haiku 4.5 — tool: decisive**
+
+| System | Accuracy | Avg latency | Tool calls |
+|---|---|---|---|
+| **full** (RAG + Python) | 23/23 (100%) | 12.45 s | 19 |
+| **rag_only** (baseline) | 21/23 (91%) | 12.38 s | 0 |
+
+Δ = +9 pp accuracy. The tool fixed two silent arithmetic slips the smaller model would otherwise have shipped:
+
+- `AAPL-2025-simple-07`: 13.51 → 14.0 (rounding drift)
+- `AAPL-2025-complex-11`: 42.86% → 0.4286 (decimal-vs-percent error on a segment-share calculation)
+
+The latest run (`eval/results/report.md`) is the Haiku run; the Opus run is summarized above.
+
+### Headline finding
+
+**Tool value scales inversely with model strength — it's a cost lever, not just an accuracy lever.** Haiku + `run_python` matches Opus's 100% accuracy at roughly one-tenth the cost. The tool moves the cost-quality frontier rather than just plugging accuracy holes on a single model.
+
+### What worked, what failed, where a human stays in
 
 **Worked**
-- Retrieval reliably surfaced the right income-statement / balance-sheet rows. Both systems grounded on the correct numbers across all 23 questions.
+- Hybrid retrieval reliably surfaced the right income-statement / balance-sheet rows. Both systems grounded on the correct numbers across both models.
 - The `<answer_json>` contract eliminated brittle regex parsing in the grader — every response was parseable.
-- Sandboxed `run_python` produced exact arithmetic on the 9 questions where the model chose to call it.
+- Sandboxed `run_python` produced exact arithmetic on every call and replaced the silent rounding / decimal-vs-% drifts that Haiku otherwise made.
 
 **Failed / surprising**
-- **The tool didn't change accuracy on this test set.** Opus 4.7 did the arithmetic in its head correctly even on CAGR, HHI, and sample SD. The tool added latency (~16% slower) and cost (~11% more) without lifting accuracy from 100%. The tool would matter more on (a) longer arithmetic chains where mental math drifts, (b) chart requests, (c) smaller models — none of which this test set exercises.
+- **On Opus, the tool didn't move accuracy.** Opus 4.7 did CAGR, HHI, and sample SD in its head and the tool only added ~16% latency and ~11% cost. The lesson is to pick model first, then architect — same workflow has different optimal architectures across models.
 - **One filing, one company.** The eval doesn't test cross-filing comparison, non-Apple formatting quirks, or filings where the relevant number lives in a footnote outside the top-K retrieved chunks. Generalization beyond Apple is unverified.
 - **No adversarial questions.** Ground-truth-free / unanswerable questions aren't in the test set, so I can't claim the model abstains correctly when the document doesn't contain the answer.
 
@@ -65,7 +99,7 @@ Latest run (`eval/results/report.md`):
 - For anything forward-looking ("guidance", "risk factors"), treat the answer as a starting point, not a conclusion.
 - For investment decisions, the system is a research assistant, not an analyst of record.
 
-## 6. Setup
+## 4. Setup
 
 Project is managed with [uv](https://docs.astral.sh/uv/). The agent loop runs through the [Claude Agent SDK](https://pypi.org/project/claude-agent-sdk/), which shells out to the local `claude` CLI — install Claude Code first if you don't have it.
 
@@ -80,7 +114,7 @@ cp .env.example .env  # then edit .env to add ANTHROPIC_API_KEY
 
 `.env` must contain `ANTHROPIC_API_KEY=sk-ant-...`. Optional: `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` to swap the default `claude-haiku-4-5`.
 
-## 7. Run the app
+## 5. Run the app
 
 ```bash
 uv run streamlit run app.py
@@ -88,7 +122,7 @@ uv run streamlit run app.py
 
 Use the upload control in the sidebar to attach a 10-K PDF. Without an upload, the chat runs in general-assistant mode (no RAG, no tool). After uploading, questions are answered against the document and the model can call `run_python` for computations / charts.
 
-## 8. Reproduce the eval
+## 6. Reproduce the eval
 
 The eval harness expects PDFs at `data/filings/<filing_id>.pdf`, where `<filing_id>` matches the IDs in `eval/test_set.json` (e.g. `AAPL-2025.pdf`).
 
@@ -115,7 +149,7 @@ uv run python -m eval.grader       # Stage 2 only — re-grades existing results
 uv run python -m eval.aggregate    # Stage 3 only — rebuilds report.md
 ```
 
-## 9. Repo layout
+## 7. Repo layout
 
 ```
 app.py                   Streamlit UI (upload + chat + viz)
@@ -123,7 +157,7 @@ src/
 ├── config.py            Model, paths, chunk/retrieval params
 ├── prompts.py           System prompts (general + filing) + context formatter
 ├── ingest.py            PDF → text chunks (pure)
-├── vectorstore.py       FAISS index built from chunks (in-memory, per upload)
+├── vectorstore.py       Hybrid retrieval (FAISS dense + BM25 sparse + RRF), in-memory per upload
 ├── tools.py             Sandboxed run_python tool
 └── agent.py             Claude Agent SDK loop, optional store + tool
 eval/
@@ -136,10 +170,10 @@ eval/
 data/filings/            PDFs the eval harness loads (gitignored)
 ```
 
-## 10. Notes
+## 8. Notes
 
 - **Sandbox**: `src/tools.py` uses a SIGALRM-based timeout; macOS/Linux only.
-- **Model**: defaults to `claude-haiku-4-5`. Set `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` in `.env` to trade cost for intelligence.
+- **Model**: defaults to `claude-haiku-4-5` — the eval shows Haiku + `run_python` matches Opus on this task at a fraction of the cost. Set `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` in `.env` to swap.
 - **Embeddings**: `sentence-transformers/all-MiniLM-L6-v2` (free, local). The first run downloads ~80MB to the HF cache.
-- **Vector store**: FAISS `IndexFlatIP` over L2-normalized embeddings (cosine similarity). Lives in `st.session_state` only — uploads are not persisted across app restarts.
+- **Retrieval**: hybrid — dense (FAISS `IndexFlatIP` over L2-normalized MiniLM embeddings, cosine similarity) + sparse (BM25Okapi over lowercased tokens), fused with Reciprocal Rank Fusion. Lives in `st.session_state` only — uploads are not persisted across app restarts.
 - **No secrets in repo**: `.env` is gitignored; `.env.example` shows the required key without a value.

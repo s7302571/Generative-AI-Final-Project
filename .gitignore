@@ -11,4 +11,4 @@ data/index/
 
 # Model cache (sentence-transformers downloads to HF cache)
 .cache/
-
+slides/
