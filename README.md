@@ -117,7 +117,9 @@ uv sync
 cp .env.example .env  # then edit .env to add ANTHROPIC_API_KEY
 ```
 
-`.env` must contain `ANTHROPIC_API_KEY=sk-ant-...`. Optional: `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` to swap the default `claude-haiku-4-5`.
+Optional: `ASKEDGAR_MODEL=claude-sonnet-4-6` or `claude-opus-4-7` to swap the default `claude-haiku-4-5`.
+
+Note: If you're already authenticated with Claude Code locally (e.g., via claude login), you don't need to set ANTHROPIC_API_KEY in .env. The Claude Agent SDK shells out to the local claude CLI and will reuse its existing login session.
 
 ## 5. Run the app
 
