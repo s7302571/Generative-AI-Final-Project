@@ -101,8 +101,14 @@ The latest run (`eval/results/report.md`) is the Haiku run; the Opus run is summ
 
 ## Artifact snapshot
 <img width="526" height="290" alt="image" src="https://github.com/user-attachments/assets/944c570a-d79c-4d12-b43d-2c710cc4193d" />
+Q: Plot Apple FY2025 revenue by geographic segment. 
+
+LLM:  Pulls Item 7 segment table, generates a labeled bar chart in-app via run_python.
 
 <img width="526" height="272" alt="image" src="https://github.com/user-attachments/assets/63fc0186-19f9-4116-8bae-3a85fcb6ae7a" />
+Q: How did each product line change? 
+
+LLM: diverging bar chart with Services leading at +$12.99B and Wearables declining $1.32B. Grounded to disaggregated revenue table.
 
 ## 4. Setup
 
